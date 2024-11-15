@@ -1,5 +1,7 @@
 package com.example.milestone_widget
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
+import android.util.Log
 
 // TODO: make button click add number to total and save it 
 
@@ -36,35 +38,52 @@ import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContent {
-//            Milestone_widgetTheme {
-//                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    AffirmationsApp()
-//                }
-//            }
+        Log.d("MainActivity", "onCreate")
+        sharedPreferences = getSharedPreferences("com.example.milestone_widget", Context.MODE_PRIVATE)
 
         setContent {
             Milestone_widgetTheme {
-                DiceRollerApp()
+                DiceRollerApp(sharedPreferences)
             }
         }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }
 
 
 @Composable
-fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
-//    var result: Int = 1
+fun DiceWithButtonAndImage(modifier: Modifier = Modifier, sharedPreferences: SharedPreferences) {
     var result by remember { mutableStateOf(1) }
-    var count by remember { mutableStateOf(0) }
+//    var count by remember { mutableStateOf(0) }
+    var count = sharedPreferences.getInt("count", 0)
+
     var itemsList by remember { mutableStateOf((0..0).toList()) }
-    var itemsIndexedList = listOf("A", "B", "C")
+
+    val allEntries: Map<String, *> = sharedPreferences.getAll()
+
+    val itemList = ArrayList<String>()
+
+    for ((key, value) in allEntries) {
+        itemList.add(value.toString())
+    }
+//    println("Updated List: $itemsList")
+//    println("Updated List: $itemsList")
+    Log.d("MainActivity", "itemList: $itemList")
+    Log.d("MainActivity", "DiceWithButtonAndImage function called!")
+
+    val myEdit = sharedPreferences.edit()
+
 
     val imageResource = when (result) {
         1 -> R.drawable.dice_1
@@ -78,10 +97,12 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
         Image(
             painter = painterResource(imageResource),
-            contentDescription = "1"
+            contentDescription = "1",
+            alignment = Alignment.TopCenter
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -89,23 +110,21 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
         Button(onClick = {
             result = (1..6).random()
             count++
+            myEdit.putInt("count", count)
+            myEdit.apply()
             itemsList = itemsList + (itemsList.size)
-//            itemsList = (0..10).toList()
+            Log.d("MainActivity", "Button clicked!")
+
+//            sharedPreferences.edit().putInt("dice_result", result).apply()
         }) {
 //            Text(stringResource(R.string.roll))
-//            Text(stringResource(R.string.roll))
             Text(
-//                text = "from $from",
                 text = "pressed $count times",
                 fontSize = 12.sp,
                 color = Color.Cyan,
-//                textAlign = TextAlign.Center,
 
                 modifier = Modifier
                     .padding(16.dp)
-//                    .align(alignment = Alignment.End)
-
-//                textAlign =
             )
         }
         LazyColumn {
@@ -115,88 +134,21 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
                     color = Color.Cyan,
                 )
             }
-
-//            item { Text("Single item") }
-
-//            itemsIndexed(itemsIndexedList) { index, item -> Text("Item at index $index is $item") }
         }
 
     }
 }
 
 
-//@Composable
-//fun AffirmationCard(affirmation: Affirmation, modifier: Modifier = Modifier) {
-//    Card(modifier = modifier) {
-//        Column {
-//            Image(
-//                painter = painterResource(affirmation.imageResourceId),
-//                contentDescription = stringResource(affirmation.stringResourceId),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(194.dp),
-//                contentScale = ContentScale.Crop
-//            )
-//            Text(
-//                text = LocalContext.current.getString(affirmation.stringResourceId),
-//                modifier = Modifier.padding(16.dp),
-//                style = MaterialTheme.typography.headlineSmall,
-////                color = Color.Cyan
-//            )
-//
-//        }
-//
-//    }
-//}
-//@Composable
-//fun AffirmationsApp() {
-//    AffirmationList(
-//        affirmationList = Datasource().loadAffirmations(),
-//    )
-//}
-
-
-
-
-//@Composable
-//fun AffirmationList(affirmationList: List<Affirmation>, modifier: Modifier = Modifier) {
-//
-//    LazyColumn {
-//        items(itemsList) { Text("Item is $it") }
-//
-//        item { Text("Single item") }
-//
-//        itemsIndexed(itemsIndexedList) { index, item -> Text("Item at index $index is $item") }
-//    }
-////    LazyColumn(
-////        modifier = modifier,
-////        state = rememberLazyListState(),
-////        userScrollEnabled = true,
-////        ) {
-////
-////        items(affirmationList) { affirmation ->
-////            AffirmationCard(
-////                affirmation = affirmation,
-////                modifier = Modifier.padding(8.dp)
-////            )
-////
-////        }
-////    }
-//}
-
-
 @Preview
 @Composable
-fun DiceRollerApp() {
+fun DiceRollerApp(sharedPreferences: SharedPreferences = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences("com.example.milestone_widget", Context.MODE_PRIVATE)) {
     DiceWithButtonAndImage(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+            .wrapContentSize(Alignment.Center),
+        sharedPreferences = sharedPreferences
     )
-//    val layoutDirection = LocalLayoutDirection.current
-//    AffirmationCard(Affirmation(R.string.affirmation1, R.drawable.image1))
-//    AffirmationsApp()
-
 }
 
 
