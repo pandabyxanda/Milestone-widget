@@ -3,6 +3,7 @@ package com.example.milestone_widget
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -24,12 +25,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
-import android.util.Log
 
 // TODO: make button click add number to total and save it 
 
@@ -78,7 +79,6 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier, sharedPreferences: Sha
         itemList.add(value.toString())
     }
 //    println("Updated List: $itemsList")
-//    println("Updated List: $itemsList")
     Log.d("MainActivity", "itemList: $itemList")
     Log.d("MainActivity", "DiceWithButtonAndImage function called!")
 
@@ -93,6 +93,27 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier, sharedPreferences: Sha
         5 -> R.drawable.dice_5
         else -> R.drawable.dice_6
     }
+
+    val db = DBHelper(LocalContext.current, null)
+    val name = "hey"
+    val age = count.toString()
+    db.addName(name, age)
+
+    var names = db.getName()
+    names?.let {
+        if (it.moveToFirst()) {
+            do {
+                val id = it.getInt(it.getColumnIndexOrThrow(DBHelper.ID_COL))
+                val name = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COl))
+                val age = it.getString(it.getColumnIndexOrThrow(DBHelper.AGE_COL))
+                val timestamp = it.getString(it.getColumnIndexOrThrow(DBHelper.TIMESTAMP))
+                Log.d("MainActivity", "ID: $id, Name: $name, Age: $age, Timestamp: $timestamp")
+            } while (it.moveToNext())
+        }
+        it.close()
+    }
+//    Log.d("MainActivity", "names: $names")
+
 
     Column(
         modifier = modifier,
@@ -115,9 +136,7 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier, sharedPreferences: Sha
             itemsList = itemsList + (itemsList.size)
             Log.d("MainActivity", "Button clicked!")
 
-//            sharedPreferences.edit().putInt("dice_result", result).apply()
         }) {
-//            Text(stringResource(R.string.roll))
             Text(
                 text = "pressed $count times",
                 fontSize = 12.sp,
@@ -142,7 +161,8 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier, sharedPreferences: Sha
 
 @Preview
 @Composable
-fun DiceRollerApp(sharedPreferences: SharedPreferences = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences("com.example.milestone_widget", Context.MODE_PRIVATE)) {
+fun DiceRollerApp(
+    sharedPreferences: SharedPreferences = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences("com.example.milestone_widget", Context.MODE_PRIVATE)) {
     DiceWithButtonAndImage(
         modifier = Modifier
             .fillMaxSize()
