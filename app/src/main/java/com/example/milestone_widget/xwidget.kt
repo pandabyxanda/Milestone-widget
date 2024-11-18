@@ -41,21 +41,29 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 //    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 //    views.setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
 
-    val pendingIntent: PendingIntent = PendingIntent.getActivity(
-        /* context = */ context,
-        /* requestCode = */  0,
-        /* intent = */ Intent(context, SecondActivity::class.java),
-        /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
+//    val pendingIntent: PendingIntent = PendingIntent.getActivity(
+//        /* context = */ context,
+//        /* requestCode = */  0,
+//        /* intent = */ Intent(context, SecondActivity::class.java),
+//        /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//    )
+//
+//    // Get the layout for the widget and attach an onClick listener to
+//    // the button.
+//    val views: RemoteViews = RemoteViews(
+//        context.packageName,
+//        R.layout.xwidget,
+//    ).apply {
+//        setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
+//    }
+    val views = RemoteViews(context.packageName, R.layout.xwidget)
 
-    // Get the layout for the widget and attach an onClick listener to
-    // the button.
-    val views: RemoteViews = RemoteViews(
-        context.packageName,
-        R.layout.xwidget,
-    ).apply {
-        setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
+    val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
+        action = "com.example.milestone_widget.UPDATE_DB"
     }
+    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    views.setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
+
 
 //    if (intent.action == "com.example.milestone_widget.UPDATE_DB") {
 ////            val db = DBHelper(context, null)

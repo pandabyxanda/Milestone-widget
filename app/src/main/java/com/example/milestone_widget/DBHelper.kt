@@ -46,6 +46,14 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null)
 
     }
+    fun getLastRow(): Cursor? {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT 1", null)
+    }
+    fun getLastRows(x: Int): Cursor? {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT $x", null)
+    }
 
     companion object {
         // here we have defined variables for our database

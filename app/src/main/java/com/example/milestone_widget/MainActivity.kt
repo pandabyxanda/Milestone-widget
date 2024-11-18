@@ -99,19 +99,29 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier, sharedPreferences: Sha
     val age = count.toString()
     db.addName(name, age)
 
-    var names = db.getName()
-    names?.let {
-        if (it.moveToFirst()) {
+//    var names = db.getName()
+    val rows = db.getLastRows(3)
+    // print the last row of the database
+    rows?.let {
+        if (it.moveToLast()) {
             do {
                 val id = it.getInt(it.getColumnIndexOrThrow(DBHelper.ID_COL))
                 val name = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COl))
                 val age = it.getString(it.getColumnIndexOrThrow(DBHelper.AGE_COL))
                 val timestamp = it.getString(it.getColumnIndexOrThrow(DBHelper.TIMESTAMP))
                 Log.d("MainActivity", "ID: $id, Name: $name, Age: $age, Timestamp: $timestamp")
-            } while (it.moveToNext())
+            } while (it.moveToPrevious())
         }
-        it.close()
     }
+//    row?.let {
+//        if (it.moveToFirst()) {
+//            val id = it.getInt(it.getColumnIndexOrThrow(DBHelper.ID_COL))
+//            val name = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COl))
+//            val age = it.getString(it.getColumnIndexOrThrow(DBHelper.AGE_COL))
+//            val timestamp = it.getString(it.getColumnIndexOrThrow(DBHelper.TIMESTAMP))
+//            Log.d("MainActivity", "ID: $id, Name: $name, Age: $age, Timestamp: $timestamp")
+//        }
+//    }
 //    Log.d("MainActivity", "names: $names")
 
 

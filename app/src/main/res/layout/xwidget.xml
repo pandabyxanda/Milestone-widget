@@ -1,37 +1,50 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Widget.Milestone_widget.AppWidget.Container"
-    android:theme="@style/Theme.Milestone_widget.AppWidgetContainer"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-<!--    <TextView-->
-<!--        style="@style/Widget.Milestone_widget.AppWidget.InnerView"-->
-<!--        android:id="@+id/appwidget_text"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:text="@string/appwidget_text"-->
-<!--        android:textSize="24sp"-->
-<!--        android:textStyle="bold|italic"-->
-<!--        android:layout_margin="8dp"-->
-<!--        android:contentDescription="@string/appwidget_text" />-->
     <Button
         android:id="@+id/appwidget_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tick4444123456789"
-        android:textColor="@color/purple_200"
-
-        android:maxResizeWidth="250dp"
-        android:maxResizeHeight="120dp"
-        android:updatePeriodMillis="100"
-        />
-
+        android:text="Click me" />
 </RelativeLayout>
+
+
+<!--<RelativeLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    style="@style/Widget.Milestone_widget.AppWidget.Container"-->
+<!--    android:theme="@style/Theme.Milestone_widget.AppWidgetContainer"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+
+
+<!--&lt;!&ndash;    <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;        style="@style/Widget.Milestone_widget.AppWidget.InnerView"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:id="@+id/appwidget_text"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_centerHorizontal="true"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_centerVertical="true"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:text="@string/appwidget_text"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:textSize="24sp"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:textStyle="bold|italic"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:layout_margin="8dp"&ndash;&gt;-->
+<!--&lt;!&ndash;        android:contentDescription="@string/appwidget_text" />&ndash;&gt;-->
+<!--    <Button-->
+<!--        android:id="@+id/appwidget_button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Tick4444123456789"-->
+<!--        android:textColor="@color/purple_200"-->
+
+<!--        android:maxResizeWidth="250dp"-->
+<!--        android:maxResizeHeight="120dp"-->
+<!--        android:updatePeriodMillis="100"-->
+<!--        />-->
+
+<!--</RelativeLayout>-->
     <!--        android:layout_centerHorizontal="true"-->
     <!--        android:layout_centerVertical="true"-->
     <!--        android:textSize="24sp"-->

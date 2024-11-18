@@ -33,8 +33,7 @@
 <!--                android:name="android.appwidget.provider"-->
 <!--                android:resource="@xml/xwidget_info" />-->
 <!--        </receiver>-->
-        <receiver android:name=".xwidget"
-            android:exported="true">
+        <receiver android:name=".xwidget" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -42,6 +41,11 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/xwidget_info" />
+        </receiver>
+        <receiver android:name=".WidgetButtonReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.milestone_widget.UPDATE_DB" />
+            </intent-filter>
         </receiver>
 
         <activity
