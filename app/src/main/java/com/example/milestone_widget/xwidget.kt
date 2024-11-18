@@ -32,8 +32,8 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
     // Construct the RemoteViews object
 //    val views = RemoteViews(context.packageName, R.layout.xwidget)
 //    val newText = "Clicked $clickCount times"
-    val clickCount = (1..6).random()
-    val newText = "Clicked $clickCount times wow"
+//    val clickCount = (1..6).random()
+//    val newText = "Clicked $clickCount times wow"
 
 //    val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
 //        action = "com.example.milestone_widget.UPDATE_DB"
@@ -75,6 +75,9 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 ////    }
 
     // Update the button text
+    val db = DBHelper(context, null)
+    val numberRows = db.getCountByName("widget_click")
+    val newText = "Clicked $numberRows times"
     views.setTextViewText(R.id.appwidget_button, newText)
 //    views.setTextViewText(R.id.appwidget_text, widgetText)
 

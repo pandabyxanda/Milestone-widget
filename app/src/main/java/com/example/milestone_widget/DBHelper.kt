@@ -55,6 +55,17 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT $x", null)
     }
 
+    fun getCountByName(name: String): Int {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME WHERE $NAME_COl = ?", arrayOf(name))
+        var count = 0
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0)
+        }
+        cursor.close()
+        return count
+    }
+
     companion object {
         // here we have defined variables for our database
         private val DATABASE_NAME = "milestone_widget_db"
