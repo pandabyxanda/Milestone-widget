@@ -1,4 +1,4 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.db
 
 import android.content.ContentValues
 import android.content.Context

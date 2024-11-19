@@ -6,6 +6,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import android.app.PendingIntent
 import android.content.Intent
+import com.example.milestone_widget.db.DBHelper
 
 /**
  * Implementation of App Widget functionality.
