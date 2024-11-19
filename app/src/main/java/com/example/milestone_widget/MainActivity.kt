@@ -33,6 +33,14 @@ import androidx.compose.ui.unit.dp
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+
+import androidx.compose.material3.TextField
+
 //import androidx.compose.foundation.rememberScrollState
 //import androidx.compose.foundation.verticalScroll
 //import androidx.compose.foundation.VerticalScrollbar
@@ -72,10 +80,28 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun TextFieldWithPlaceholder(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderText: String,
+    labelText: String? = null,
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(placeholderText, color = Color.Gray) },
+//        label = { Text(labelText) }
+    )
+}
+
+@Composable
 fun MainScreen(sharedPreferences: SharedPreferences) {
     val db = DBHelper(LocalContext.current, null)
-
     val itemsList = remember { mutableStateListOf<Int>() }
+    val showDialog = remember { mutableStateOf(false) }
+    val textState = remember { mutableStateOf("") }
+    val titleState = remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         val rows = db.getLastRows(50)
 //        rows?.let {
@@ -107,12 +133,13 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
         }
         FloatingActionButton(
             onClick = {
-                val name = "hey"
-//                val age = count.toString()
-                val age = "300"
-                db.addName(name, age)
-                itemsList.add(0, 999)
+//                val name = "hey"
+////                val age = count.toString()
+//                val age = "300"
+//                db.addName(name, age)
+//                itemsList.add(0, 999)
                 Log.d("MainActivity", "New item created")
+                showDialog.value = true
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -120,6 +147,49 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
         ) {
             Text("+")
         }
+    }
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = {
+//                OutlinedTextField(
+//                    value = textState.value,
+//                    onValueChange = { textState.value = it },
+//                    label = { Text("Text") }
+//                )
+                TextFieldWithPlaceholder(
+                    value = titleState.value,
+                    onValueChange = { titleState.value = it },
+                    placeholderText = "Title",
+                )
+            },
+            text = {
+//                OutlinedTextField(
+//                    value = textState.value,
+//                    onValueChange = { textState.value = it },
+//                    label = { Text("Text") }
+//                )
+                TextFieldWithPlaceholder(
+                    value = textState.value,
+                    onValueChange = { textState.value = it },
+                    placeholderText = "Note",
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    // Handle the text input
+                    Log.d("MainActivity", "Text entered: ${textState.value}")
+                    showDialog.value = false
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog.value = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
