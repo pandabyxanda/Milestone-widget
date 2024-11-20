@@ -20,13 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.milestone_widget.db.DBHelper
+import com.example.milestone_widget.db.DataBase
 
 
 @Composable
-fun NewPage(navController: NavHostController) {
+fun ItemPageCreate(navController: NavHostController) {
     val context = LocalContext.current
-    val db = DBHelper(context, null)
+    val db = DataBase(context, null)
     val nameState = remember { mutableStateOf("") }
     val shortNameState = remember { mutableStateOf("") }
     val descriptionState = remember { mutableStateOf("") }

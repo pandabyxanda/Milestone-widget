@@ -6,7 +6,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import android.app.PendingIntent
 import android.content.Intent
-import com.example.milestone_widget.db.DBHelper
+import com.example.milestone_widget.db.DataBase
 
 class Xwidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -26,7 +26,7 @@ class Xwidget : AppWidgetProvider() {
 
 internal fun updateAppWidgetInternal(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     val views = RemoteViews(context.packageName, R.layout.xwidget)
-    val db = DBHelper(context, null)
+    val db = DataBase(context, null)
     val items = db.getAllItems()
 
     views.removeAllViews(R.id.widget_container)
@@ -48,7 +48,7 @@ internal fun updateAppWidgetInternal(context: Context, appWidgetManager: AppWidg
     items?.let {
         if (it.moveToFirst()) {
             do {
-                val itemName = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COL))
+                val itemName = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
                 val buttonView = RemoteViews(context.packageName, R.layout.widget_button)
                 buttonView.setTextViewText(R.id.widget_button, itemName)
 

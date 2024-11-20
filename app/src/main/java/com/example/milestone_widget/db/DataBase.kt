@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
+class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -75,7 +75,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $ITEM_TABLE_NAME", null)
     }
 
-    fun getItemActionsByItemId(itemId: Int): Cursor? {
+    fun getActionsByItemId(itemId: Int): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?", arrayOf(itemId.toString()))
     }

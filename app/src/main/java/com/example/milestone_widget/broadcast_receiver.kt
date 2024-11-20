@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.example.milestone_widget.db.DBHelper
+import com.example.milestone_widget.db.DataBase
 
 class WidgetButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -13,14 +13,14 @@ class WidgetButtonReceiver : BroadcastReceiver() {
             Log.d("WidgetButtonReceiver", "Button clicked: $itemName")
 
             // Handle the button click event
-            val db = DBHelper(context, null)
+            val db = DataBase(context, null)
             val cursor = db.getAllItems()
             cursor?.use {
                 if (it.moveToFirst()) {
                     do {
-                        val name = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COL))
+                        val name = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
                         if (name == itemName) {
-                            val itemId = it.getInt(it.getColumnIndexOrThrow(DBHelper.ITEM_ID_COL))
+                            val itemId = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
                             db.addItemAction(itemId)
                             Log.d("WidgetButtonReceiver", "Item action added for item ID: $itemId")
                             break

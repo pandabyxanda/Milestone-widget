@@ -1,6 +1,9 @@
 package com.example.milestone_widget
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +18,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
-import android.content.Intent
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +42,10 @@ class MainActivity : ComponentActivity() {
         // Send broadcast to update the widget
         val intent = Intent(this, Xwidget::class.java).apply {
             action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, AppWidgetManager.getInstance(this@MainActivity).getAppWidgetIds(ComponentName(this@MainActivity, Xwidget::class.java)))
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+                AppWidgetManager.getInstance(this@MainActivity)
+                    .getAppWidgetIds(ComponentName(this@MainActivity, Xwidget::class.java))
+            )
         }
         sendBroadcast(intent)
     }
@@ -62,15 +65,25 @@ class MainActivity : ComponentActivity() {
 //        composable("newPage") { NewPage(navController) }
 //    }
 //}
+//@Suppress("DEPRECATION")
+//inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? {
+//    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getSerializable(key, T::class.java)
+//    else getSerializable(key) as? T
+//}
+
 @Composable
 fun MainScreen(sharedPreferences: SharedPreferences) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "main") {
         composable("main") { MainContent(navController, sharedPreferences) }
-        composable("newPage") { NewPage(navController) }
-        composable("itemPage/{itemName}") { backStackEntry ->
-            val itemName = backStackEntry.arguments?.getString("itemName")
-            ItemPage(navController, itemName)
+        composable("ItemPageCreate") { ItemPageCreate(navController) }
+        composable("ItemPageUpdate/{id}/{name}/{shortName}/{description}/{dateCreated}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toInt()
+            val name = backStackEntry.arguments?.getString("name")
+            val shortName = backStackEntry.arguments?.getString("shortName")
+            val description = backStackEntry.arguments?.getString("description")
+            val dateCreated = backStackEntry.arguments?.getString("dateCreated")
+            ItemPageUpdate(navController, id, name, shortName, description, dateCreated)
         }
     }
 }

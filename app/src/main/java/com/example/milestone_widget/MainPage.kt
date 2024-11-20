@@ -1,7 +1,6 @@
 package com.example.milestone_widget
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,28 +25,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.milestone_widget.db.DBHelper
+import com.example.milestone_widget.db.DataBase
+import com.example.milestone_widget.db.Item
 
 
 @Composable
-fun MainList(navController: NavHostController, modifier: Modifier = Modifier, itemsList: List<String>) {
+fun MainList(navController: NavHostController, modifier: Modifier = Modifier, itemList: List<Item>) {
     LazyColumn(
         modifier = modifier
             .padding(10.dp)
             .fillMaxSize()
     ) {
-        items(itemsList) { item ->
+        items(itemList) { item ->
             Card(
                 modifier = Modifier
                     .padding(vertical = 6.dp)
                     .fillMaxWidth()
                     .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
                     .clickable {
-                        navController.navigate("itemPage/$item")
+                        navController.navigate("ItemPageUpdate/${item.id}/${item.name}/${item.shortName}/${item.description}/${item.dateCreated}")
                     }
             ) {
                 Text(
-                    text = item,
+                    text = "${item.id} ${item.name}${if (item.shortName.isNotEmpty()) " (${item.shortName})" else ""} - (${item.actionCount})",
                     color = Color.Black,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -58,19 +58,26 @@ fun MainList(navController: NavHostController, modifier: Modifier = Modifier, it
 
 @Composable
 fun MainContent(navController: NavHostController, sharedPreferences: SharedPreferences) {
-    val db = DBHelper(LocalContext.current, null)
-    val itemNameList = remember { mutableStateListOf<String>() }
+    val db = DataBase(LocalContext.current, null)
+//    val itemNameList = remember { mutableStateListOf<String>() }
+    val itemList = remember { mutableStateListOf<Item>() }
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
     LaunchedEffect(currentBackStackEntry.value) {
         if (currentBackStackEntry.value?.destination?.route == "main") {
-            itemNameList.clear()
+//            itemNameList.clear()
+            itemList.clear()
             val rows = db.getAllItems()
             rows?.let {
                 if (it.moveToFirst()) {
                     do {
-                        val name = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COL))
-                        itemNameList.add(name)
+                        val id = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
+                        val name = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
+                        val shortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
+                        val description = it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
+                        val dateCreated = it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
+                        val actionCount = db.getActionsByItemId(id)?.count ?: 0
+                        itemList.add(Item(id, name, shortName, description, dateCreated, actionCount))
                     } while (it.moveToNext())
                 }
             }
@@ -84,12 +91,12 @@ fun MainContent(navController: NavHostController, sharedPreferences: SharedPrefe
                 navController = navController,
                 modifier = Modifier
                     .fillMaxSize(),
-                itemsList = itemNameList
+                itemList = itemList
             )
         }
         FloatingActionButton(
             onClick = {
-                navController.navigate("newPage")
+                navController.navigate("ItemPageCreate")
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
