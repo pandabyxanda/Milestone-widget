@@ -1,19 +1,17 @@
 package com.example.milestone_widget
 
-import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.RemoteViews
-import com.example.milestone_widget.db.DBHelper
 
 class WidgetButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("WidgetButtonReceiver", "onReceive")
-        Log.d("WidgetButtonReceiver", intent.action.toString())
-//        if (intent.action == "com.example.milestone_widget.UPDATE_DB") {
+        if (intent.action == "com.example.milestone_widget.BUTTON_CLICK") {
+            val itemName = intent.getStringExtra("item_name")
+            Log.d("WidgetButtonReceiver", "Button clicked: $itemName")
+            // Handle the button click event
+            //        if (intent.action == "com.example.milestone_widget.UPDATE_DB") {
 //            val db = DBHelper(context, null)
 //            val name = "widget_click"
 //            val age = "0" // or any other value you want to store
@@ -36,5 +34,6 @@ class WidgetButtonReceiver : BroadcastReceiver() {
 //                appWidgetManager.updateAppWidget(widgetId, remoteViews)
 //            }
 //        }
+        }
     }
 }

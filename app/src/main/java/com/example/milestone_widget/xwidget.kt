@@ -8,12 +8,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import com.example.milestone_widget.db.DBHelper
 
-/**
- * Implementation of App Widget functionality.
- */
 class xwidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
@@ -29,61 +25,44 @@ class xwidget : AppWidgetProvider() {
 }
 
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-//    val widgetText = context.getString(R.string.appwidget_text)
-    // Construct the RemoteViews object
-//    val views = RemoteViews(context.packageName, R.layout.xwidget)
-//    val newText = "Clicked $clickCount times"
-//    val clickCount = (1..6).random()
-//    val newText = "Clicked $clickCount times wow"
-
-//    val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
-//        action = "com.example.milestone_widget.UPDATE_DB"
-//    }
-//    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-//    views.setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
-
-//    val pendingIntent: PendingIntent = PendingIntent.getActivity(
-//        /* context = */ context,
-//        /* requestCode = */  0,
-//        /* intent = */ Intent(context, SecondActivity::class.java),
-//        /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//    )
-//
-//    // Get the layout for the widget and attach an onClick listener to
-//    // the button.
-//    val views: RemoteViews = RemoteViews(
-//        context.packageName,
-//        R.layout.xwidget,
-//    ).apply {
-//        setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
-//    }
     val views = RemoteViews(context.packageName, R.layout.xwidget)
+    val db = DBHelper(context, null)
+    val items = db.getAllItems()
 
-    val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
-        action = "com.example.milestone_widget.UPDATE_DB"
+    views.removeAllViews(R.id.widget_container)
+
+    // Create a RemoteViews object for the header
+    val headerView = RemoteViews(context.packageName, R.layout.widget_header)
+    headerView.setTextViewText(R.id.widget_header, "Dynamic Header")
+
+//    // Set up the update button
+//    val updateIntent = Intent(context, xwidget::class.java).apply {
+//        action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+//        putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
+//    }
+//    val updatePendingIntent = PendingIntent.getBroadcast(context, appWidgetId, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+//    headerView.setOnClickPendingIntent(R.id.update_button, updatePendingIntent)
+
+    views.addView(R.id.widget_container, headerView)
+
+    items?.let {
+        if (it.moveToFirst()) {
+            do {
+                val itemName = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COL))
+                val buttonView = RemoteViews(context.packageName, R.layout.widget_button)
+                buttonView.setTextViewText(R.id.widget_button, itemName)
+
+                val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
+                    action = "com.example.milestone_widget.BUTTON_CLICK"
+                    putExtra("item_name", itemName)
+                }
+                val pendingIntent = PendingIntent.getBroadcast(context, itemName.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                buttonView.setOnClickPendingIntent(R.id.widget_button, pendingIntent)
+
+                views.addView(R.id.widget_container, buttonView)
+            } while (it.moveToNext())
+        }
     }
-    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-    views.setOnClickPendingIntent(R.id.appwidget_button, pendingIntent)
 
-
-//    if (intent.action == "com.example.milestone_widget.UPDATE_DB") {
-////            val db = DBHelper(context, null)
-////            val name = "widget_click"
-////            val age = "0" // or any other value you want to store
-////            db.addName(name, age)
-////            Log.d("WidgetButtonReceiver", "Database updated from widget button click")
-////        }
-////    }
-
-    // Update the button text
-//    val db = DBHelper(context, null)
-//    val numberRows = db.getCountByName("widget_click")
-//    val newText = "Clicked $numberRows times"
-    val newText = "Clicked xxx times"
-    views.setTextViewText(R.id.appwidget_button, newText)
-//    views.setTextViewText(R.id.appwidget_text, widgetText)
-
-    // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
-

@@ -15,7 +15,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
-
+import android.content.Intent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -36,7 +38,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
+        // Send broadcast to update the widget
+        val intent = Intent(this, xwidget::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, AppWidgetManager.getInstance(this@MainActivity).getAppWidgetIds(ComponentName(this@MainActivity, xwidget::class.java)))
+        }
+        sendBroadcast(intent)
     }
+
 
     override fun onResume() {
         super.onResume()
