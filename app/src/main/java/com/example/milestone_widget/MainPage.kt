@@ -30,7 +30,7 @@ import com.example.milestone_widget.db.DBHelper
 
 
 @Composable
-fun MainList(modifier: Modifier = Modifier, itemsList: List<String>) {
+fun MainList(navController: NavHostController, modifier: Modifier = Modifier, itemsList: List<String>) {
     LazyColumn(
         modifier = modifier
             .padding(10.dp)
@@ -39,12 +39,11 @@ fun MainList(modifier: Modifier = Modifier, itemsList: List<String>) {
         items(itemsList) { item ->
             Card(
                 modifier = Modifier
-                    .padding(vertical = 6.dp) // Adjust the vertical padding to change the gap
+                    .padding(vertical = 6.dp)
                     .fillMaxWidth()
                     .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
                     .clickable {
-                        // Handle card click
-                        Log.d("MainActivity", "Card clicked: $item")
+                        navController.navigate("itemPage/$item")
                     }
             ) {
                 Text(
@@ -82,6 +81,7 @@ fun MainContent(navController: NavHostController, sharedPreferences: SharedPrefe
         Column {
             CustomTopBar()
             MainList(
+                navController = navController,
                 modifier = Modifier
                     .fillMaxSize(),
                 itemsList = itemNameList

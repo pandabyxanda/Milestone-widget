@@ -8,7 +8,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import com.example.milestone_widget.db.DBHelper
 
-class xwidget : AppWidgetProvider() {
+class Xwidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
