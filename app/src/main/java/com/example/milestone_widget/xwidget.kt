@@ -76,9 +76,10 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 ////    }
 
     // Update the button text
-    val db = DBHelper(context, null)
-    val numberRows = db.getCountByName("widget_click")
-    val newText = "Clicked $numberRows times"
+//    val db = DBHelper(context, null)
+//    val numberRows = db.getCountByName("widget_click")
+//    val newText = "Clicked $numberRows times"
+    val newText = "Clicked xxx times"
     views.setTextViewText(R.id.appwidget_button, newText)
 //    views.setTextViewText(R.id.appwidget_text, widgetText)
 

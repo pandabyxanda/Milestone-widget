@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,17 +17,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.milestone_widget.db.DBHelper
+
 
 @Composable
 fun NewPage(navController: NavHostController) {
-    val textState = remember { mutableStateOf("") }
-    val titleState = remember { mutableStateOf("") }
-    val titleFocusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+    val db = DBHelper(context, null)
+    val nameState = remember { mutableStateOf("") }
+    val shortNameState = remember { mutableStateOf("") }
+    val descriptionState = remember { mutableStateOf("") }
+    val nameFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
-        titleFocusRequester.requestFocus()
+        nameFocusRequester.requestFocus()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (nameState.value.isNotEmpty()) {
+                db.addItem(nameState.value, shortNameState.value, descriptionState.value)
+            }
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -34,17 +49,24 @@ fun NewPage(navController: NavHostController) {
             CustomTopBarItem(navController = navController)
             Spacer(modifier = Modifier.height(16.dp))
             TextFieldWithPlaceholder(
-                value = titleState.value,
-                onValueChange = { titleState.value = it },
-                placeholderText = "Title (shown in the widget)",
+                value = nameState.value,
+                onValueChange = { nameState.value = it },
+                placeholderText = "Name",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .focusRequester(titleFocusRequester),
+                    .focusRequester(nameFocusRequester),
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextFieldWithPlaceholder(
-                value = textState.value,
-                onValueChange = { textState.value = it },
+                value = shortNameState.value,
+                onValueChange = { shortNameState.value = it },
+                placeholderText = "Short Name (shown in the widget)",
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFieldWithPlaceholder(
+                value = descriptionState.value,
+                onValueChange = { descriptionState.value = it },
                 placeholderText = "Description",
                 modifier = Modifier.fillMaxWidth(),
             )

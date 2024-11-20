@@ -25,11 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.milestone_widget.db.DBHelper
 
 
 @Composable
-fun MainList(modifier: Modifier = Modifier, itemsList: List<Int>) {
+fun MainList(modifier: Modifier = Modifier, itemsList: List<String>) {
     LazyColumn(
         modifier = modifier
             .padding(10.dp)
@@ -47,7 +48,7 @@ fun MainList(modifier: Modifier = Modifier, itemsList: List<Int>) {
                     }
             ) {
                 Text(
-                    text = "Item is $item",
+                    text = item,
                     color = Color.Black,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -59,16 +60,20 @@ fun MainList(modifier: Modifier = Modifier, itemsList: List<Int>) {
 @Composable
 fun MainContent(navController: NavHostController, sharedPreferences: SharedPreferences) {
     val db = DBHelper(LocalContext.current, null)
-    val itemsList = remember { mutableStateListOf<Int>() }
+    val itemNameList = remember { mutableStateListOf<String>() }
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
-    LaunchedEffect(Unit) {
-        val rows = db.getLastRows(50)
-        rows?.let {
-            if (it.moveToFirst()) {
-                do {
-                    val id = it.getInt(it.getColumnIndexOrThrow(DBHelper.ID_COL))
-                    itemsList.add(id)
-                } while (it.moveToNext())
+    LaunchedEffect(currentBackStackEntry.value) {
+        if (currentBackStackEntry.value?.destination?.route == "main") {
+            itemNameList.clear()
+            val rows = db.getAllItems()
+            rows?.let {
+                if (it.moveToFirst()) {
+                    do {
+                        val name = it.getString(it.getColumnIndexOrThrow(DBHelper.NAME_COL))
+                        itemNameList.add(name)
+                    } while (it.moveToNext())
+                }
             }
         }
     }
@@ -79,7 +84,7 @@ fun MainContent(navController: NavHostController, sharedPreferences: SharedPrefe
             MainList(
                 modifier = Modifier
                     .fillMaxSize(),
-                itemsList = itemsList
+                itemsList = itemNameList
             )
         }
         FloatingActionButton(

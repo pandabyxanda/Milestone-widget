@@ -11,72 +11,161 @@ import java.util.Locale
 
 class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
+
     override fun onCreate(db: SQLiteDatabase) {
-        val query = ("CREATE TABLE " + TABLE_NAME + " ("
-                + ID_COL + " INTEGER PRIMARY KEY, " +
-                NAME_COl + " TEXT," +
-                AGE_COL + " TEXT," +
-                TIMESTAMP + " TEXT" + ")")
-        db.execSQL(query)
+        val createItemTableQuery = """
+            CREATE TABLE $ITEM_TABLE_NAME (
+                $ITEM_ID_COL INTEGER PRIMARY KEY AUTOINCREMENT,
+                $NAME_COL TEXT NOT NULL,
+                $SHORT_NAME_COL TEXT,
+                $DESCRIPTION_COL TEXT,
+                $DATE_CREATED_COL TEXT
+            )
+        """.trimIndent()
+
+        val createItemActionsTableQuery = """
+            CREATE TABLE $ITEM_ACTIONS_TABLE_NAME (
+                $ACTION_ID_COL INTEGER PRIMARY KEY AUTOINCREMENT,
+                $ITEM_ID_COL INTEGER,
+                $DATE_COL TEXT,
+                FOREIGN KEY($ITEM_ID_COL) REFERENCES $ITEM_TABLE_NAME($ITEM_ID_COL)
+            )
+        """.trimIndent()
+
+        db.execSQL(createItemTableQuery)
+        db.execSQL(createItemActionsTableQuery)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $ITEM_TABLE_NAME")
+        db.execSQL("DROP TABLE IF EXISTS $ITEM_ACTIONS_TABLE_NAME")
         onCreate(db)
     }
 
-    fun addName(name: String, age: String) {
-        val values = ContentValues()
-        values.put(NAME_COl, name)
-        values.put(AGE_COL, age)
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val currentDate = sdf.format(Date())
-        values.put(TIMESTAMP, currentDate)
+    fun addItem(name: String, shortName: String?, description: String?) {
+        val values = ContentValues().apply {
+            put(NAME_COL, name)
+            put(SHORT_NAME_COL, shortName)
+            put(DESCRIPTION_COL, description)
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val currentDate = sdf.format(Date())
+            put(DATE_CREATED_COL, currentDate)
+        }
 
-//        val currentTime = System.currentTimeMillis()
-//        values.put(TIMESTAMP, currentTime)
-//        values.put(TIMESTAMP, "datetime('now')")
         val db = this.writableDatabase
-        db.insert(TABLE_NAME, null, values)
+        db.insert(ITEM_TABLE_NAME, null, values)
         db.close()
     }
 
-    fun getName(): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null)
-
-    }
-    fun getLastRow(): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT 1", null)
-    }
-    fun getLastRows(x: Int): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT $x", null)
-    }
-
-    fun getCountByName(name: String): Int {
-        val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME WHERE $NAME_COl = ?", arrayOf(name))
-        var count = 0
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(0)
+    fun addItemAction(itemId: Int) {
+        val values = ContentValues().apply {
+            put(ITEM_ID_COL, itemId)
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val currentDate = sdf.format(Date())
+            put(DATE_COL, currentDate)
         }
-        cursor.close()
-        return count
+
+        val db = this.writableDatabase
+        db.insert(ITEM_ACTIONS_TABLE_NAME, null, values)
+        db.close()
+    }
+
+    fun getAllItems(): Cursor? {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $ITEM_TABLE_NAME", null)
+    }
+
+    fun getItemActionsByItemId(itemId: Int): Cursor? {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?", arrayOf(itemId.toString()))
     }
 
     companion object {
-        // here we have defined variables for our database
-        private val DATABASE_NAME = "milestone_widget_db"
-        private val DATABASE_VERSION = 1
-        val TABLE_NAME = "main_table"
-        val ID_COL = "id"
-        val NAME_COl = "name"
-        val AGE_COL = "age"
-        val TIMESTAMP = "timestamp"
+        private const val DATABASE_NAME = "milestone_widget_db"
+        private const val DATABASE_VERSION = 1
+
+        const val ITEM_TABLE_NAME = "item_table"
+        const val ITEM_ID_COL = "item_id"
+        const val NAME_COL = "name"
+        const val SHORT_NAME_COL = "short_name"
+        const val DESCRIPTION_COL = "description"
+        const val DATE_CREATED_COL = "date_created"
+
+        const val ITEM_ACTIONS_TABLE_NAME = "item_actions_table"
+        const val ACTION_ID_COL = "action_id"
+        const val DATE_COL = "date"
     }
 }
+
+
+//class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
+//    SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
+//    override fun onCreate(db: SQLiteDatabase) {
+//        val query = ("CREATE TABLE " + TABLE_NAME + " ("
+//                + ID_COL + " INTEGER PRIMARY KEY, " +
+//                NAME_COl + " TEXT," +
+//                AGE_COL + " TEXT," +
+//                TIMESTAMP + " TEXT" + ")")
+//        db.execSQL(query)
+//    }
+//
+//    override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+//        onCreate(db)
+//    }
+//
+//    fun addName(name: String, age: String) {
+//        val values = ContentValues()
+//        values.put(NAME_COl, name)
+//        values.put(AGE_COL, age)
+//        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+//        val currentDate = sdf.format(Date())
+//        values.put(TIMESTAMP, currentDate)
+//
+////        val currentTime = System.currentTimeMillis()
+////        values.put(TIMESTAMP, currentTime)
+////        values.put(TIMESTAMP, "datetime('now')")
+//        val db = this.writableDatabase
+//        db.insert(TABLE_NAME, null, values)
+//        db.close()
+//    }
+//
+//    fun getName(): Cursor? {
+//        val db = this.readableDatabase
+//        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null)
+//
+//    }
+//    fun getLastRow(): Cursor? {
+//        val db = this.readableDatabase
+//        return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT 1", null)
+//    }
+//    fun getLastRows(x: Int): Cursor? {
+//        val db = this.readableDatabase
+//        return db.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $ID_COL DESC LIMIT $x", null)
+//    }
+//
+//    fun getCountByName(name: String): Int {
+//        val db = this.readableDatabase
+//        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME WHERE $NAME_COl = ?", arrayOf(name))
+//        var count = 0
+//        if (cursor.moveToFirst()) {
+//            count = cursor.getInt(0)
+//        }
+//        cursor.close()
+//        return count
+//    }
+//
+//    companion object {
+//        // here we have defined variables for our database
+//        private val DATABASE_NAME = "milestone_widget_db"
+//        private val DATABASE_VERSION = 1
+//        val TABLE_NAME = "main_table"
+//        val ID_COL = "id"
+//        val NAME_COl = "name"
+//        val AGE_COL = "age"
+//        val TIMESTAMP = "timestamp"
+//    }
+//}
 
 
 //class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
