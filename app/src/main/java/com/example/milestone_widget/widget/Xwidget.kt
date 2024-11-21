@@ -8,6 +8,9 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class Xwidget : AppWidgetProvider() {
     override fun onUpdate(
@@ -37,6 +40,7 @@ internal fun updateAppWidgetInternal(
     val views = RemoteViews(context.packageName, R.layout.xwidget)
     val db = DataBase(context, null)
     val items = db.getAllItems()
+    val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
     views.removeAllViews(R.id.widget_container)
 
@@ -60,7 +64,7 @@ internal fun updateAppWidgetInternal(
                 val itemName = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
                 val itemShortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
                 val itemId = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
-                val actionCount = db.getActionCountByItemId(itemId)
+                val actionCount = db.getActionCountByItemIdAndDate(itemId, date)
                 val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
                 val buttonView = RemoteViews(context.packageName, R.layout.widget_button)
 //                val displayName = itemShortName ?: itemName

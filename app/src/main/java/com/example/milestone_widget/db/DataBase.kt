@@ -77,19 +77,41 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $ITEM_TABLE_NAME", null)
     }
 
-    fun getActionsByItemId(itemId: Int): Cursor? {
+    //    fun getActionsByItemId(itemId: Int): Cursor? {
+//        val db = this.readableDatabase
+//        return db.rawQuery(
+//            "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?",
+//            arrayOf(itemId.toString())
+//        )
+//    }
+    fun getActionsByItemIdAndDate(itemId: Int, date: String): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery(
-            "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?",
-            arrayOf(itemId.toString())
+            "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND DATE($DATE_COL) = DATE(?)",
+            arrayOf(itemId.toString(), date)
         )
     }
 
-    fun getActionCountByItemId(itemId: Int): Int {
+//    fun getActionCountByItemId(itemId: Int): Int {
+//        val db = this.readableDatabase
+//        val cursor = db.rawQuery(
+//            "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?",
+//            arrayOf(itemId.toString())
+//        )
+//        var count = 0
+//        cursor?.use {
+//            if (it.moveToFirst()) {
+//                count = it.getInt(0)
+//            }
+//        }
+//        return count
+//    }
+
+    fun getActionCountByItemIdAndDate(itemId: Int, date: String): Int {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
-            "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?",
-            arrayOf(itemId.toString())
+            "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND DATE($DATE_COL) = DATE(?)",
+            arrayOf(itemId.toString(), date)
         )
         var count = 0
         cursor?.use {

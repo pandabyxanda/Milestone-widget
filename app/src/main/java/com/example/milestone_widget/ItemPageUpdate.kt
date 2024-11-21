@@ -20,6 +20,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ fun ItemPageUpdate(
     description: String?,
     dateCreated: String?,
     isActive: Int?,
+    selectedDate: MutableState<String>
 ) {
     val context = LocalContext.current
     val db = DataBase(context, null)
@@ -50,10 +52,9 @@ fun ItemPageUpdate(
     val shortNameState = remember { mutableStateOf(shortName ?: "") }
     val descriptionState = remember { mutableStateOf(description ?: "") }
     val isActiveState = remember { mutableStateOf(isActive == 1) }
-
     LaunchedEffect(id) {
         id?.let { it ->
-            val rows = db.getActionsByItemId(it)
+            val rows = db.getActionsByItemIdAndDate(it, selectedDate.value)
             rows?.let {
                 if (it.moveToFirst()) {
                     do {

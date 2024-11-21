@@ -9,6 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
@@ -16,6 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
 import com.example.milestone_widget.widget.updateWidget
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class MainActivity : ComponentActivity() {
@@ -59,8 +64,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(sharedPreferences: SharedPreferences) {
     val navController = rememberNavController()
+    val selectedDate = remember {
+        mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
+    }
     NavHost(navController = navController, startDestination = "main") {
-        composable("main") { MainContent(navController, sharedPreferences) }
+        composable("main") { MainContent(navController, sharedPreferences, selectedDate) }
         composable("ItemPageCreate") { ItemPageCreate(navController) }
         composable("ItemPageUpdate/{id}/{name}/{shortName}/{description}/{dateCreated}/{isActive}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt()
@@ -69,7 +77,7 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
             val description = backStackEntry.arguments?.getString("description")
             val dateCreated = backStackEntry.arguments?.getString("dateCreated")
             val isActive = backStackEntry.arguments?.getString("isActive")?.toInt()
-            ItemPageUpdate(navController, id, name, shortName, description, dateCreated, isActive)
+            ItemPageUpdate(navController, id, name, shortName, description, dateCreated, isActive, selectedDate)
         }
     }
 }

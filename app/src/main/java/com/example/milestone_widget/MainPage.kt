@@ -1,6 +1,7 @@
 package com.example.milestone_widget
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,7 +30,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.db.Item
-
 
 @Composable
 fun MainList(
@@ -88,16 +89,23 @@ fun MainList(
     }
 }
 
+
 @Composable
-fun MainContent(navController: NavHostController, sharedPreferences: SharedPreferences) {
+fun MainContent(
+    navController: NavHostController,
+    sharedPreferences: SharedPreferences,
+    selectedDate: MutableState<String>
+) {
     val db = DataBase(LocalContext.current, null)
 //    val itemNameList = remember { mutableStateListOf<String>() }
     val itemList = remember { mutableStateListOf<Item>() }
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
-    LaunchedEffect(currentBackStackEntry.value) {
+    Log.d("MainContent selectedDate", selectedDate.value)
+    LaunchedEffect(currentBackStackEntry.value, selectedDate.value) {
         if (currentBackStackEntry.value?.destination?.route == "main") {
 //            itemNameList.clear()
+            Log.d("selectedDate", selectedDate.value)
             itemList.clear()
             val rows = db.getAllItems()
             rows?.let {
@@ -111,7 +119,8 @@ fun MainContent(navController: NavHostController, sharedPreferences: SharedPrefe
                             it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
                         val dateCreated =
                             it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
-                        val actionCount = db.getActionsByItemId(id)?.count ?: 0
+                        val actionCount =
+                            db.getActionsByItemIdAndDate(id, selectedDate.value)?.count ?: 0
                         val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
                         itemList.add(
                             Item(
@@ -132,7 +141,7 @@ fun MainContent(navController: NavHostController, sharedPreferences: SharedPrefe
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            CustomTopBar()
+            CustomTopBar(selectedDate = selectedDate)
             MainList(
                 navController = navController,
                 modifier = Modifier
