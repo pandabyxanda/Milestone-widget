@@ -1,4 +1,4 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.widget
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,6 +7,7 @@ import android.util.Log
 import com.example.milestone_widget.db.DataBase
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import com.example.milestone_widget.R
 
 
 class WidgetButtonReceiver : BroadcastReceiver() {

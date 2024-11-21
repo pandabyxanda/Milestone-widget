@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.milestone_widget.db.DataBase
-
+import com.example.milestone_widget.widget.updateWidget
 
 @Composable
 fun ItemPageCreate(navController: NavHostController) {
@@ -40,6 +40,7 @@ fun ItemPageCreate(navController: NavHostController) {
         onDispose {
             if (nameState.value.isNotEmpty()) {
                 db.addItem(nameState.value, shortNameState.value, descriptionState.value)
+                updateWidget(context)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
 
 class Xwidget : AppWidgetProvider() {

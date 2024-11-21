@@ -1,9 +1,6 @@
 package com.example.milestone_widget
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
+import com.example.milestone_widget.widget.updateWidget
 
 
 class MainActivity : ComponentActivity() {
@@ -39,16 +37,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        // Send broadcast to update the widget
-        val intent = Intent(this, Xwidget::class.java).apply {
-            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            putExtra(
-                AppWidgetManager.EXTRA_APPWIDGET_IDS,
-                AppWidgetManager.getInstance(this@MainActivity)
-                    .getAppWidgetIds(ComponentName(this@MainActivity, Xwidget::class.java))
-            )
-        }
-        sendBroadcast(intent)
+//        // Send broadcast to update the widget
+//        val intent = Intent(this, Xwidget::class.java).apply {
+//            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+//            putExtra(
+//                AppWidgetManager.EXTRA_APPWIDGET_IDS,
+//                AppWidgetManager.getInstance(this@MainActivity)
+//                    .getAppWidgetIds(ComponentName(this@MainActivity, Xwidget::class.java))
+//            )
+//        }
+//        sendBroadcast(intent)
+        updateWidget(this)
     }
 
 
