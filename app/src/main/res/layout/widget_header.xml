@@ -16,7 +16,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="#FFFFFF" />
+        android:textColor="#000000" />
 
 </LinearLayout>
     <!--    android:background="#A9EDEBEB"-->

@@ -6,6 +6,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import android.app.PendingIntent
 import android.content.Intent
+import android.util.Log
 import com.example.milestone_widget.db.DataBase
 
 class Xwidget : AppWidgetProvider() {
@@ -49,18 +50,27 @@ internal fun updateAppWidgetInternal(context: Context, appWidgetManager: AppWidg
         if (it.moveToFirst()) {
             do {
                 val itemName = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
+                val itemShortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
                 val itemId = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
                 val actionCount = db.getActionCountByItemId(itemId)
                 val buttonView = RemoteViews(context.packageName, R.layout.widget_button)
-//                buttonView.setTextViewText(R.id.widget_button, itemName)
-                buttonView.setTextViewText(R.id.widget_button, "$itemName ($actionCount)")
+//                val displayName = itemShortName ?: itemName
+                val displayName = if (itemShortName.isNullOrEmpty()) itemName else itemShortName
+//                Log.d("Xwidget", "displayName: $displayName")
+//                Log.d("Xwidget", "itemName: $itemName")
+//                Log.d("Xwidget", "itemShortName: $itemShortName")
+
+
+
+                buttonView.setTextViewText(R.id.widget_button_line1, "$displayName")
+                buttonView.setTextViewText(R.id.widget_button_line2, "$actionCount")
 
                 val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
                     action = "com.example.milestone_widget.BUTTON_CLICK"
                     putExtra("item_name", itemName)
                 }
                 val pendingIntent = PendingIntent.getBroadcast(context, itemName.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                buttonView.setOnClickPendingIntent(R.id.widget_button, pendingIntent)
+                buttonView.setOnClickPendingIntent(R.id.widget_button_layout, pendingIntent)
 
                 views.addView(R.id.widget_container, buttonView)
             } while (it.moveToNext())

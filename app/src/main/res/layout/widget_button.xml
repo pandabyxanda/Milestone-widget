@@ -2,11 +2,67 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
-    <Button
-        android:id="@+id/widget_button"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/widget_button_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/button_border"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/widget_button_line1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button Text Line 1"
+            android:textSize="20sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/widget_button_line2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button Text Line 2"
+            android:textSize="10sp"
+            android:textColor="#000000" />
+    </LinearLayout>
 </LinearLayout>
+
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal"-->
+<!--    android:padding="8dp">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/widget_button"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="1"-->
+<!--        android:gravity="start"-->
+<!--        android:text="Button Text"-->
+<!--        android:textSize="20sp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:background="@drawable/button_border"-->
+<!--        android:textColor="#000000"/>-->
+<!--</LinearLayout>-->
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal">-->
+
+<!--    <Button-->
+<!--        android:id="@+id/widget_button"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Button" />-->
+<!--</LinearLayout>-->
+
