@@ -42,7 +42,8 @@ class MainActivity : ComponentActivity() {
         // Send broadcast to update the widget
         val intent = Intent(this, Xwidget::class.java).apply {
             action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+            putExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_IDS,
                 AppWidgetManager.getInstance(this@MainActivity)
                     .getAppWidgetIds(ComponentName(this@MainActivity, Xwidget::class.java))
             )
@@ -56,34 +57,20 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-//@Composable
-//fun MainScreen(sharedPreferences: SharedPreferences) {
-//    val navController = rememberNavController()
-//    NavHost(navController = navController, startDestination = "main") {
-//        composable("main") { MainContent(navController, sharedPreferences) }
-//        composable("newPage") { NewPage(navController) }
-//    }
-//}
-//@Suppress("DEPRECATION")
-//inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? {
-//    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getSerializable(key, T::class.java)
-//    else getSerializable(key) as? T
-//}
-
 @Composable
 fun MainScreen(sharedPreferences: SharedPreferences) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "main") {
         composable("main") { MainContent(navController, sharedPreferences) }
         composable("ItemPageCreate") { ItemPageCreate(navController) }
-        composable("ItemPageUpdate/{id}/{name}/{shortName}/{description}/{dateCreated}") { backStackEntry ->
+        composable("ItemPageUpdate/{id}/{name}/{shortName}/{description}/{dateCreated}/{isActive}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt()
             val name = backStackEntry.arguments?.getString("name")
             val shortName = backStackEntry.arguments?.getString("shortName")
             val description = backStackEntry.arguments?.getString("description")
             val dateCreated = backStackEntry.arguments?.getString("dateCreated")
-            ItemPageUpdate(navController, id, name, shortName, description, dateCreated)
+            val isActive = backStackEntry.arguments?.getString("isActive")?.toInt()
+            ItemPageUpdate(navController, id, name, shortName, description, dateCreated, isActive)
         }
     }
 }

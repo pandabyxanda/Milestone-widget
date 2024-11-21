@@ -1,16 +1,19 @@
 package com.example.milestone_widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.widget.RemoteViews
-import android.app.PendingIntent
 import android.content.Intent
-import android.util.Log
+import android.widget.RemoteViews
 import com.example.milestone_widget.db.DataBase
 
 class Xwidget : AppWidgetProvider() {
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         for (appWidgetId in appWidgetIds) {
             updateAppWidgetInternal(context, appWidgetManager, appWidgetId)
         }
@@ -25,7 +28,11 @@ class Xwidget : AppWidgetProvider() {
     }
 }
 
-internal fun updateAppWidgetInternal(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+internal fun updateAppWidgetInternal(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetId: Int
+) {
     val views = RemoteViews(context.packageName, R.layout.xwidget)
     val db = DataBase(context, null)
     val items = db.getAllItems()
@@ -53,26 +60,33 @@ internal fun updateAppWidgetInternal(context: Context, appWidgetManager: AppWidg
                 val itemShortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
                 val itemId = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
                 val actionCount = db.getActionCountByItemId(itemId)
+                val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
                 val buttonView = RemoteViews(context.packageName, R.layout.widget_button)
 //                val displayName = itemShortName ?: itemName
                 val displayName = if (itemShortName.isNullOrEmpty()) itemName else itemShortName
 //                Log.d("Xwidget", "displayName: $displayName")
 //                Log.d("Xwidget", "itemName: $itemName")
 //                Log.d("Xwidget", "itemShortName: $itemShortName")
+                if (isActive == 1) {
+                    buttonView.setTextViewText(R.id.widget_button_line1, displayName)
+                    buttonView.setTextViewText(R.id.widget_button_line2, "$actionCount")
 
+                    val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
+                        action = "com.example.milestone_widget.BUTTON_CLICK"
+                        putExtra("item_name", itemName)
+                    }
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        itemName.hashCode(),
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                    buttonView.setOnClickPendingIntent(R.id.widget_button_layout, pendingIntent)
 
-
-                buttonView.setTextViewText(R.id.widget_button_line1, "$displayName")
-                buttonView.setTextViewText(R.id.widget_button_line2, "$actionCount")
-
-                val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
-                    action = "com.example.milestone_widget.BUTTON_CLICK"
-                    putExtra("item_name", itemName)
+                    views.addView(R.id.widget_container, buttonView)
                 }
-                val pendingIntent = PendingIntent.getBroadcast(context, itemName.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                buttonView.setOnClickPendingIntent(R.id.widget_button_layout, pendingIntent)
 
-                views.addView(R.id.widget_container, buttonView)
+
             } while (it.moveToNext())
         }
     }

@@ -6,5 +6,6 @@ data class Item(
     val shortName: String,
     val description: String,
     val dateCreated: String,
-    val actionCount: Int
+    val actionCount: Int,
+    val isActive: Int
 )

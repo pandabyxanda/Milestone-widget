@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,27 +31,58 @@ import com.example.milestone_widget.db.Item
 
 
 @Composable
-fun MainList(navController: NavHostController, modifier: Modifier = Modifier, itemList: List<Item>) {
+fun MainList(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    itemList: List<Item>
+) {
+    val context = LocalContext.current
+    val db = DataBase(context, null)
+    val itemListState = remember { mutableStateListOf<Item>().apply { addAll(itemList) } }
+//    val itemListState = remember { mutableStateListOf(*itemList.toTypedArray()) }
+//    Log.d("MainList", "itemListState: $itemListState")
+//    Log.d("MainList", "itemList: $itemList")
+    LaunchedEffect(itemList) {
+        itemListState.clear()
+        itemListState.addAll(itemList)
+    }
     LazyColumn(
         modifier = modifier
             .padding(10.dp)
             .fillMaxSize()
     ) {
-        items(itemList) { item ->
+        items(itemListState) { item ->
             Card(
                 modifier = Modifier
                     .padding(vertical = 6.dp)
                     .fillMaxWidth()
                     .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
                     .clickable {
-                        navController.navigate("ItemPageUpdate/${item.id}/${item.name}/${item.shortName}/${item.description}/${item.dateCreated}")
+                        navController.navigate("ItemPageUpdate/${item.id}/${item.name}/${item.shortName}/${item.description}/${item.dateCreated}/${item.isActive}")
                     }
             ) {
-                Text(
-                    text = "${item.id} ${item.name}${if (item.shortName.isNotEmpty()) " (${item.shortName})" else ""} - (${item.actionCount})",
-                    color = Color.Black,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${item.name}${if (item.shortName.isNotEmpty()) " (${item.shortName})" else ""} (${item.actionCount})",
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "x",
+                        color = Color.Red,
+                        modifier = Modifier
+                            .clickable {
+                                db.deleteItem(item.id)
+                                itemListState.remove(item)
+                            }
+                            .padding(start = 8.dp)
+                    )
+                }
             }
         }
     }
@@ -73,11 +105,25 @@ fun MainContent(navController: NavHostController, sharedPreferences: SharedPrefe
                     do {
                         val id = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
                         val name = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
-                        val shortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
-                        val description = it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
-                        val dateCreated = it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
+                        val shortName =
+                            it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
+                        val description =
+                            it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
+                        val dateCreated =
+                            it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
                         val actionCount = db.getActionsByItemId(id)?.count ?: 0
-                        itemList.add(Item(id, name, shortName, description, dateCreated, actionCount))
+                        val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
+                        itemList.add(
+                            Item(
+                                id,
+                                name,
+                                shortName,
+                                description,
+                                dateCreated,
+                                actionCount,
+                                isActive
+                            )
+                        )
                     } while (it.moveToNext())
                 }
             }
