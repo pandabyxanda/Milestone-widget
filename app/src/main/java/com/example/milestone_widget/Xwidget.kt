@@ -49,8 +49,11 @@ internal fun updateAppWidgetInternal(context: Context, appWidgetManager: AppWidg
         if (it.moveToFirst()) {
             do {
                 val itemName = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
+                val itemId = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
+                val actionCount = db.getActionCountByItemId(itemId)
                 val buttonView = RemoteViews(context.packageName, R.layout.widget_button)
-                buttonView.setTextViewText(R.id.widget_button, itemName)
+//                buttonView.setTextViewText(R.id.widget_button, itemName)
+                buttonView.setTextViewText(R.id.widget_button, "$itemName ($actionCount)")
 
                 val intent = Intent(context, WidgetButtonReceiver::class.java).apply {
                     action = "com.example.milestone_widget.BUTTON_CLICK"

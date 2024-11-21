@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.example.milestone_widget.db.DataBase
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+
 
 class WidgetButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -27,6 +30,15 @@ class WidgetButtonReceiver : BroadcastReceiver() {
                         }
                     } while (it.moveToNext())
                 }
+            }
+
+            // Update the widget
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val componentName = ComponentName(context, Xwidget::class.java)
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_container)
+            for (appWidgetId in appWidgetIds) {
+                updateAppWidgetInternal(context, appWidgetManager, appWidgetId)
             }
         }
     }

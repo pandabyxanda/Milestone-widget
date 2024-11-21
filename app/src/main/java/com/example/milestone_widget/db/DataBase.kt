@@ -80,6 +80,18 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?", arrayOf(itemId.toString()))
     }
 
+    fun getActionCountByItemId(itemId: Int): Int {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?", arrayOf(itemId.toString()))
+        var count = 0
+        cursor?.use {
+            if (it.moveToFirst()) {
+                count = it.getInt(0)
+            }
+        }
+        return count
+    }
+
     companion object {
         private const val DATABASE_NAME = "milestone_widget_db"
         private const val DATABASE_VERSION = 1
