@@ -33,7 +33,6 @@ import androidx.navigation.NavHostController
 import com.example.milestone_widget.db.Action
 import com.example.milestone_widget.db.DataBase
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.compose.rememberNavController
 
 
@@ -86,7 +85,7 @@ fun ItemPageUpdate(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            CustomTopBarItem(navController = navController)
+            TopBarItemPage(navController = navController)
             Spacer(modifier = Modifier.height(16.dp))
             TextFieldWithPlaceholderItemPage(
                 value = nameState.value,

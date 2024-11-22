@@ -50,7 +50,7 @@ fun ItemPageCreate(navController: NavHostController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            CustomTopBarItem(navController = navController)
+            TopBarItemPage(navController = navController)
             Spacer(modifier = Modifier.height(16.dp))
             TextFieldWithPlaceholder(
                 value = nameState.value,

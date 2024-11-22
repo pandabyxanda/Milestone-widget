@@ -39,65 +39,6 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun MainList(
-    navController: NavHostController,
-    modifier: Modifier = Modifier,
-    itemList: List<Item>
-) {
-    val context = LocalContext.current
-    val db = DataBase(context, null)
-    val itemListState = remember { mutableStateListOf<Item>().apply { addAll(itemList) } }
-//    val itemListState = remember { mutableStateListOf(*itemList.toTypedArray()) }
-//    Log.d("MainList", "itemListState: $itemListState")
-//    Log.d("MainList", "itemList: $itemList")
-    LaunchedEffect(itemList) {
-        itemListState.clear()
-        itemListState.addAll(itemList)
-    }
-    LazyColumn(
-        modifier = modifier
-            .padding(10.dp)
-            .fillMaxSize()
-    ) {
-        items(itemListState) { item ->
-            Card(
-                modifier = Modifier
-                    .padding(vertical = 6.dp)
-                    .fillMaxWidth()
-                    .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
-                    .clickable {
-                        navController.navigate("ItemPageUpdate/${item.id}/${item.name}/${item.shortName}/${item.description}/${item.dateCreated}/${item.isActive}")
-                    }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "${item.name}${if (item.shortName.isNotEmpty()) " (${item.shortName})" else ""} (${item.actionCount})",
-                        color = Color.Black,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Text(
-                        text = "x",
-                        color = Color.Red,
-                        modifier = Modifier
-                            .clickable {
-                                db.deleteItem(item.id)
-                                itemListState.remove(item)
-                            }
-                            .padding(start = 8.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
 fun MainContent(
     navController: NavHostController,
     sharedPreferences: SharedPreferences,
@@ -110,9 +51,10 @@ fun MainContent(
 
     Log.d("MainContent selectedDate", selectedDate.value)
     LaunchedEffect(currentBackStackEntry.value, selectedDate.value) {
+        Log.d("LaunchedEffect", "LaunchedEffect trigger ${currentBackStackEntry.value} ${selectedDate.value}")
         if (currentBackStackEntry.value?.destination?.route == "main") {
 //            itemNameList.clear()
-            Log.d("selectedDate", selectedDate.value)
+            Log.d("selectedDate", "selectedDate after if: ${selectedDate.value}")
             itemList.clear()
             val rows = db.getAllItems()
             rows?.let {
@@ -165,6 +107,65 @@ fun MainContent(
                 .padding(16.dp)
         ) {
             Text("+")
+        }
+    }
+}
+
+
+@Composable
+fun MainList(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    itemList: MutableList<Item>
+) {
+    val context = LocalContext.current
+    val db = DataBase(context, null)
+//    val itemListState = remember { mutableStateListOf<Item>().apply { addAll(itemList) } }
+//    val itemListState = remember { mutableStateListOf(*itemList.toTypedArray()) }
+//    Log.d("MainList", "itemListState: $itemListState")
+//    Log.d("MainList", "itemList: $itemList")
+//    LaunchedEffect(itemListState) {
+//        itemListState.clear()
+//        itemListState.addAll(itemList)
+//    }
+    LazyColumn(
+        modifier = modifier
+            .padding(10.dp)
+            .fillMaxSize()
+    ) {
+        items(itemList) { item ->
+            Card(
+                modifier = Modifier
+                    .padding(vertical = 6.dp)
+                    .fillMaxWidth()
+                    .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
+                    .clickable {
+                        navController.navigate("ItemPageUpdate/${item.id}/${item.name}/${item.shortName}/${item.description}/${item.dateCreated}/${item.isActive}")
+                    }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${item.name}${if (item.shortName.isNotEmpty()) " (${item.shortName})" else ""} (${item.actionCount})",
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "x",
+                        color = Color.Red,
+                        modifier = Modifier
+                            .clickable {
+                                db.deleteItem(item.id)
+                                itemList.remove(item)
+                            }
+                            .padding(start = 8.dp)
+                    )
+                }
+            }
         }
     }
 }
