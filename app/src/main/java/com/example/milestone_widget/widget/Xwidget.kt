@@ -46,15 +46,21 @@ internal fun updateAppWidgetInternal(
 
     // Create a RemoteViews object for the header
     val headerView = RemoteViews(context.packageName, R.layout.widget_header)
-    headerView.setTextViewText(R.id.widget_header, "Dynamic Header")
+//    headerView.setTextViewText(R.id.widget_header, context.getString(R.string.widget_header_name))
 
-//    // Set up the update button
-//    val updateIntent = Intent(context, xwidget::class.java).apply {
-//        action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-//        putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
-//    }
-//    val updatePendingIntent = PendingIntent.getBroadcast(context, appWidgetId, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-//    headerView.setOnClickPendingIntent(R.id.update_button, updatePendingIntent)
+    // Set up the update button
+    val updateIntent = Intent(context, Xwidget::class.java).apply {
+        action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
+    }
+    val updatePendingIntent = PendingIntent.getBroadcast(
+        context,
+        appWidgetId,
+        updateIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    headerView.setOnClickPendingIntent(R.id.update_button, updatePendingIntent)
+
 
     views.addView(R.id.widget_container, headerView)
 

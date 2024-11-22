@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@android:color/transparent"
     android:padding="8dp"
-    >
+    android:gravity="center">
 
-    <TextView
-        android:id="@+id/widget_header"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Header"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="#000000" />
+<!--    <TextView-->
+<!--        android:id="@+id/widget_header"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="default"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textColor="@android:color/black"-->
+<!--        android:gravity="center" />-->
 
+    <ImageView
+        android:id="@+id/update_button"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/baseline_refresh_black_18"
+        android:contentDescription="update button description"
+        android:layout_marginStart="8dp"/>
 </LinearLayout>
+
+<!--    android:contentDescription="@string/update_button_desc"-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal"-->
+<!--    android:background="@android:color/transparent"-->
+<!--    android:padding="8dp"-->
+<!--    >-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/widget_header"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="1"-->
+<!--        android:text="Header"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:gravity="center"-->
+<!--        android:textColor="#000000" />-->
+
+<!--</LinearLayout>-->
     <!--    android:background="#A9EDEBEB"-->
