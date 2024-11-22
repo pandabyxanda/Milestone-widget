@@ -29,7 +29,7 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $ACTION_ID_COL INTEGER PRIMARY KEY AUTOINCREMENT,
                 $ITEM_ID_COL INTEGER,
                 $DATE_COL TEXT,
-                FOREIGN KEY($ITEM_ID_COL) REFERENCES $ITEM_TABLE_NAME($ITEM_ID_COL)
+                FOREIGN KEY($ITEM_ID_COL) REFERENCES $ITEM_TABLE_NAME($ITEM_ID_COL) ON DELETE CASCADE
             )
         """.trimIndent()
 
@@ -41,6 +41,11 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("DROP TABLE IF EXISTS $ITEM_TABLE_NAME")
         db.execSQL("DROP TABLE IF EXISTS $ITEM_ACTIONS_TABLE_NAME")
         onCreate(db)
+    }
+
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        db.setForeignKeyConstraintsEnabled(true)
     }
 
     fun addItem(name: String, shortName: String?, description: String?) {
@@ -77,13 +82,6 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $ITEM_TABLE_NAME", null)
     }
 
-    //    fun getActionsByItemId(itemId: Int): Cursor? {
-//        val db = this.readableDatabase
-//        return db.rawQuery(
-//            "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?",
-//            arrayOf(itemId.toString())
-//        )
-//    }
     fun getActionsByItemIdAndDate(itemId: Int, date: String): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery(
@@ -91,21 +89,6 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             arrayOf(itemId.toString(), date)
         )
     }
-
-//    fun getActionCountByItemId(itemId: Int): Int {
-//        val db = this.readableDatabase
-//        val cursor = db.rawQuery(
-//            "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ?",
-//            arrayOf(itemId.toString())
-//        )
-//        var count = 0
-//        cursor?.use {
-//            if (it.moveToFirst()) {
-//                count = it.getInt(0)
-//            }
-//        }
-//        return count
-//    }
 
     fun getActionCountByItemIdAndDate(itemId: Int, date: String): Int {
         val db = this.readableDatabase
@@ -148,7 +131,7 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     companion object {
         private const val DATABASE_NAME = "milestone_widget_db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 1
 
         const val ITEM_TABLE_NAME = "item_table"
         const val ITEM_ID_COL = "item_id"
