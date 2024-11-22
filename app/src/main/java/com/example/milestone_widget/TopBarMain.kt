@@ -26,7 +26,7 @@ import java.util.Calendar
 
 
 @Composable
-fun CustomTopBar(selectedDate: MutableState<String>) {
+fun TopBarMain(selectedDate: MutableState<String>) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     if (selectedDate.value.isNotEmpty()) {
@@ -41,11 +41,11 @@ fun CustomTopBar(selectedDate: MutableState<String>) {
             .background(Color.Blue)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.Center
     ) {
-        IconButton(onClick = { /* Handle menu click */ }) {
-            Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = Color.White)
-        }
+//        IconButton(onClick = { /* Handle menu click */ }) {
+//            Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = Color.White)
+//        }
 //        Text(text = "Main Screen", color = Color.White)
 
         IconButton(onClick = {
@@ -65,9 +65,9 @@ fun CustomTopBar(selectedDate: MutableState<String>) {
 //            Text(text = "Select Date")
         }
 
-        IconButton(onClick = { /* Handle search click */ }) {
-            Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White)
-        }
+//        IconButton(onClick = { /* Handle search click */ }) {
+//            Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White)
+//        }
     }
 }
 
@@ -82,7 +82,7 @@ fun CustomTopBarItem(navController: NavHostController) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(onClick = {
-            navController.popBackStack()
+            navController.navigate("main")
         }) {
             Icon(
                 Icons.AutoMirrored.Default.ArrowBack,

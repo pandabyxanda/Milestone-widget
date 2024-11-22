@@ -1,5 +1,6 @@
 package com.example.milestone_widget
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.border
@@ -20,16 +21,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.db.Item
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun MainList(
@@ -141,7 +148,7 @@ fun MainContent(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            CustomTopBar(selectedDate = selectedDate)
+            TopBarMain(selectedDate = selectedDate)
             MainList(
                 navController = navController,
                 modifier = Modifier
@@ -160,4 +167,18 @@ fun MainContent(
             Text("+")
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainContentPreview() {
+    val navController = rememberNavController()
+    val selectedDate = remember {
+        mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
+    }
+    MainContent(
+        navController = navController,
+        sharedPreferences = LocalContext.current.getSharedPreferences("prefs", Context.MODE_PRIVATE),
+        selectedDate = selectedDate
+    )
 }

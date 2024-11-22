@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.widget.updateWidget
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+
 
 @Composable
 fun ItemPageCreate(navController: NavHostController) {
@@ -89,4 +92,11 @@ fun TextFieldWithPlaceholder(
         placeholder = { Text(placeholderText, color = Color.Gray) },
         modifier = modifier
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ItemPageCreatePreview() {
+    val navController = rememberNavController()
+    ItemPageCreate(navController = navController)
 }

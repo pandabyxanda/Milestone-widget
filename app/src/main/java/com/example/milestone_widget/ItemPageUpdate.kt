@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.milestone_widget.db.Action
 import com.example.milestone_widget.db.DataBase
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.mutableStateOf
+import androidx.navigation.compose.rememberNavController
 
 
 @Composable
@@ -175,5 +178,22 @@ fun TextFieldWithPlaceholderItemPage(
         onValueChange = onValueChange,
         placeholder = { Text(placeholderText, color = Color.Gray) },
         modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ItemPageUpdatePreview() {
+    val navController = rememberNavController()
+    val selectedDate = remember { mutableStateOf("2024-11-22") }
+    ItemPageUpdate(
+        navController = navController,
+        id = 1,
+        name = "Sample Item",
+        shortName = "Sample",
+        description = "This is a sample item description.",
+        dateCreated = "2024-11-22",
+        isActive = 1,
+        selectedDate = selectedDate
     )
 }
