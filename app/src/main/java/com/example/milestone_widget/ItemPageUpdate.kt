@@ -1,5 +1,6 @@
 package com.example.milestone_widget
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -28,12 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.milestone_widget.db.Action
 import com.example.milestone_widget.db.DataBase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.milestone_widget.widget.updateWidget
 
 
 @Composable
@@ -45,7 +51,8 @@ fun ItemPageUpdate(
     description: String?,
     dateCreated: String?,
     isActive: Int?,
-    selectedDate: MutableState<String>
+    selectedDate: MutableState<String>,
+    onItemAddedListener: OnItemAddedListener
 ) {
     val context = LocalContext.current
     val db = DataBase(context, null)
@@ -72,58 +79,87 @@ fun ItemPageUpdate(
     DisposableEffect(Unit) {
         onDispose {
             id?.let {
-                db.updateItem(
-                    it,
-                    nameState.value,
-                    shortNameState.value,
-                    descriptionState.value,
-                    if (isActiveState.value) 1 else 0
-                )
+                if (nameState.value.isNotEmpty()) {
+                    db.updateItem(
+                        it,
+                        nameState.value,
+                        shortNameState.value,
+                        descriptionState.value,
+                        if (isActiveState.value) 1 else 0
+                    )
+//                updateWidget(context)
+                    onItemAddedListener.onItemAdded()
+                }
             }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(colorResource(id = R.color.main_background))
+    ) {
         Column {
-            TopBarItemPage(navController = navController)
+            TopBarItemPage(
+                navController = navController,
+                text = "Update ${nameState.value}"
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            TextFieldWithPlaceholderItemPage(
+            TextFieldWithPlaceholder(
                 value = nameState.value,
                 onValueChange = { nameState.value = it },
                 placeholderText = "Name",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textSize = 24,
+                placeholderTextSize = 24,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            TextFieldWithPlaceholderItemPage(
+            TextFieldWithPlaceholder(
                 value = shortNameState.value,
                 onValueChange = { shortNameState.value = it },
                 placeholderText = "Short Name (shown in the widget)",
                 modifier = Modifier.fillMaxWidth(),
+                textSize = 18,
+                placeholderTextSize = 18,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            TextFieldWithPlaceholderItemPage(
+            TextFieldWithPlaceholder(
                 value = descriptionState.value,
                 onValueChange = { descriptionState.value = it },
                 placeholderText = "Description",
                 modifier = Modifier.fillMaxWidth(),
+                textSize = 18,
+                placeholderTextSize = 18,
+                multiLines = true,
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
+//                modifier = Modifier.padding(16.dp)
             ) {
                 Checkbox(
                     checked = isActiveState.value,
-                    onCheckedChange = { isActiveState.value = it }
+                    onCheckedChange = { isActiveState.value = it },
+                    colors = CheckboxDefaults.colors(
+                    checkedColor = colorResource(id = R.color.button_add_item_background),
+                    uncheckedColor = Color.Red,
+                    checkmarkColor = Color.White
+                    )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Show in widget", color = Color.Black)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(thickness = 1.dp, color = Color.Gray)
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(
+                        start = 8.dp,
+                        end = 8.dp,
+                        top = 0.dp,
+                        bottom = 0.dp
+                    )
             ) {
 
                 items(actionList) { action ->
@@ -164,21 +200,7 @@ fun ItemPageUpdate(
 }
 
 
-@Composable
-fun TextFieldWithPlaceholderItemPage(
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholderText: String,
-    modifier: Modifier = Modifier,
-    labelText: String? = null,
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { Text(placeholderText, color = Color.Gray) },
-        modifier = modifier
-    )
-}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -193,6 +215,11 @@ fun ItemPageUpdatePreview() {
         description = "This is a sample item description.",
         dateCreated = "2024-11-22",
         isActive = 1,
-        selectedDate = selectedDate
+        selectedDate = selectedDate,
+        object : OnItemAddedListener {
+            override fun onItemAdded() {
+                // Do nothing
+            }
+        }
     )
 }

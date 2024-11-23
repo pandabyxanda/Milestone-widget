@@ -106,7 +106,8 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
                     description,
                     dateCreated,
                     isActive,
-                    selectedDate
+                    selectedDate,
+                    onItemAddedListener
                 )
             }
         }

@@ -2,24 +2,9 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="40dp"
     android:minHeight="40dp"
-    android:updatePeriodMillis="86400000"
+    android:updatePeriodMillis="28800000"
     android:initialLayout="@layout/xwidget"
     android:resizeMode="horizontal|vertical"
+    android:previewImage="@drawable/widget_preview"
     android:widgetCategory="home_screen">
 </appwidget-provider>
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:minWidth="40dp"-->
-<!--    android:minHeight="40dp"-->
-<!--    android:updatePeriodMillis="100"-->
-<!--    android:previewImage="@drawable/example_appwidget_preview"-->
-<!--    android:initialLayout="@layout/xwidget"-->
-<!--    android:description="@string/app_widget_description"-->
-<!--    android:resizeMode="horizontal|vertical"-->
-<!--    android:widgetCategory="home_screen"-->
-<!--    android:previewLayout="@layout/xwidget"-->
-<!--    android:targetCellHeight="1"-->
-<!--    android:targetCellWidth="1"-->
-<!--    android:initialKeyguardLayout="@layout/xwidget"-->
-<!--/>-->

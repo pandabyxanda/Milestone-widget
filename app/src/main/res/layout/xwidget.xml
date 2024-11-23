@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="0dp"
-    android:background="#F0F0F0">
+    android:background="@color/widget_background">
+
 </LinearLayout>
 
 

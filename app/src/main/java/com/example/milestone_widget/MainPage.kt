@@ -3,8 +3,10 @@ package com.example.milestone_widget
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,8 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -39,6 +44,7 @@ import com.example.milestone_widget.db.Item
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 @Composable
 fun MainContent(
@@ -64,7 +70,10 @@ fun MainContent(
     val refreshMainPage = {
         refreshItemList(db, itemList, selectedDate.value)
     }
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(colorResource(id = R.color.main_background))
+    ) {
         Column {
             TopBarMain(selectedDate, onRefresh = refreshMainPage)
             MainList(
@@ -82,9 +91,15 @@ fun MainContent(
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
+                .padding(16.dp),
+            containerColor = colorResource(id = R.color.button_add_item_background)
+
         ) {
-            Text("+")
+            Text(
+                text = "+",
+
+                fontSize = 30.sp,
+                )
         }
     }
 }
@@ -116,7 +131,7 @@ fun refreshItemList(db: DataBase, itemList: MutableList<Item>, selectedDate: Str
             } while (it.moveToNext())
         }
     }
-    Log.d("MainList", "itemList 88: $itemList")
+    Log.d("MainList", "itemList 88")
 }
 
 
@@ -145,19 +160,32 @@ fun MainList(
                     .border(2.dp, Color.Black, shape = RoundedCornerShape(16.dp))
                     .clickable {
                         navController.navigate("ItemPageUpdate/${item.id}/${item.name}/${item.shortName}/${item.description}/${item.dateCreated}/${item.isActive}")
-                    }
-            ) {
+                    },
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.main_list_card_background)),
+
+                ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "${item.name}${if (item.shortName.isNotEmpty()) " (${item.shortName})" else ""} (${item.actionCount})",
-                        color = Color.Black,
+                    Column(
                         modifier = Modifier.weight(1f)
-                    )
+                    ) {
+                        Text(
+                            text = "${item.name}${if (item.shortName.isNotEmpty()) " | ${item.shortName}" else ""}",
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            text = item.actionCount.toString(),
+                            color = Color.Black,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     Text(
                         text = "x",
                         color = Color.Red,
@@ -166,7 +194,7 @@ fun MainList(
                                 setItemToDelete(item)
                                 setShowDialog(true)
                             }
-                            .padding(start = 8.dp)
+                            .padding(start = 8.dp),
                     )
                 }
             }
@@ -209,27 +237,33 @@ fun MainContentPreview() {
     }
     val itemList = remember { mutableStateListOf<Item>() }
     val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-    val item1 = Item(1,
+    val item1 = Item(
+        1,
         "Beer",
         "\uD83C\uDF7A",
         "Sample Description",
         date,
         0,
-        1)
-    val item2 = Item(1,
+        1
+    )
+    val item2 = Item(
+        1,
         "Water",
         "",
         "Sample Description",
         date,
         5,
-        1)
-    val item3 = Item(1,
+        1
+    )
+    val item3 = Item(
+        1,
         "Trainings",
         "T",
         "Sample Description",
         date,
         0,
-        0)
+        0
+    )
     itemList.add(item1)
     itemList.add(item2)
     itemList.add(item3)

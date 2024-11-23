@@ -3,6 +3,7 @@ package com.example.milestone_widget
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,18 +16,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 @Composable
-fun TopBarItemPage(navController: NavHostController) {
+fun TopBarItemPage(
+    navController: NavHostController,
+    text: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Blue)
+            .background(colorResource(id = R.color.header_background))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.Center
     ) {
         IconButton(onClick = {
             navController.navigate("main")
@@ -37,9 +42,8 @@ fun TopBarItemPage(navController: NavHostController) {
                 tint = Color.White
             )
         }
-        Text(text = "Main Screen", color = Color.White)
-//        IconButton(onClick = { /* Handle search click */ }) {
-//            Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White)
-//        }
+        Spacer(modifier = Modifier.weight(1f)) // spacer to push the text to the center
+        Text(text = text, color = Color.White)
+        Spacer(modifier = Modifier.weight(2f)) // spacer to balance the row
     }
 }
