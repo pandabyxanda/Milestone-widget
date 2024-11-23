@@ -24,10 +24,14 @@ import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.widget.updateWidget
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.milestone_widget.db.Item
 
 
 @Composable
-fun ItemPageCreate(navController: NavHostController) {
+fun ItemPageCreate(
+    navController: NavHostController,
+    itemList: MutableList<Item>
+) {
     val context = LocalContext.current
     val db = DataBase(context, null)
     val nameState = remember { mutableStateOf("") }
@@ -44,6 +48,8 @@ fun ItemPageCreate(navController: NavHostController) {
             if (nameState.value.isNotEmpty()) {
                 db.addItem(nameState.value, shortNameState.value, descriptionState.value)
                 updateWidget(context)
+//                navController.previousBackStackEntry?.savedStateHandle?.set("itemCreated", true)
+                itemList.add(Item(1, nameState.value, shortNameState.value, descriptionState.value, "2000-00-00", 0, 0))
             }
         }
     }
@@ -98,5 +104,8 @@ fun TextFieldWithPlaceholder(
 @Composable
 fun ItemPageCreatePreview() {
     val navController = rememberNavController()
-    ItemPageCreate(navController = navController)
+    ItemPageCreate(
+        navController = navController,
+        itemList = mutableListOf()
+    )
 }

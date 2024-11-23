@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -42,19 +43,17 @@ import java.util.Locale
 fun MainContent(
     navController: NavHostController,
     sharedPreferences: SharedPreferences,
-    selectedDate: MutableState<String>
+    selectedDate: MutableState<String>,
+    itemList: MutableList<Item>
 ) {
     val db = DataBase(LocalContext.current, null)
-//    val itemNameList = remember { mutableStateListOf<String>() }
-    val itemList = remember { mutableStateListOf<Item>() }
+
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
 
     Log.d("MainContent selectedDate", selectedDate.value)
-    LaunchedEffect(currentBackStackEntry.value, selectedDate.value) {
+    LaunchedEffect(currentBackStackEntry.value, selectedDate.value, itemList) {
         Log.d("LaunchedEffect", "LaunchedEffect trigger ${currentBackStackEntry.value} ${selectedDate.value}")
         if (currentBackStackEntry.value?.destination?.route == "main") {
-//            itemNameList.clear()
-            Log.d("selectedDate", "selectedDate after if: ${selectedDate.value}")
             itemList.clear()
             val rows = db.getAllItems()
             rows?.let {
@@ -62,39 +61,48 @@ fun MainContent(
                     do {
                         val id = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
                         val name = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
-                        val shortName =
-                            it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
-                        val description =
-                            it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
-                        val dateCreated =
-                            it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
-                        val actionCount =
-                            db.getActionsByItemIdAndDate(id, selectedDate.value)?.count ?: 0
+                        val shortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
+                        val description = it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
+                        val dateCreated = it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
+                        val actionCount = db.getActionsByItemIdAndDate(id, selectedDate.value)?.count ?: 0
                         val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
-                        itemList.add(
-                            Item(
-                                id,
-                                name,
-                                shortName,
-                                description,
-                                dateCreated,
-                                actionCount,
-                                isActive
-                            )
-                        )
+                        itemList.add(Item(id, name, shortName, description, dateCreated, actionCount, isActive))
                     } while (it.moveToNext())
                 }
             }
+            Log.d("MainList", "itemList 88: $itemList")
         }
     }
+
+//    // Listen for result from ItemPageCreate
+//    navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("itemCreated")?.observe(LocalLifecycleOwner.current) { result ->
+//        if (result) {
+//            // Trigger the update
+//            itemList.clear()
+//            val rows = db.getAllItems()
+//            rows?.let {
+//                if (it.moveToFirst()) {
+//                    do {
+//                        val id = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
+//                        val name = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
+//                        val shortName = it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
+//                        val description = it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
+//                        val dateCreated = it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
+//                        val actionCount = db.getActionsByItemIdAndDate(id, selectedDate.value)?.count ?: 0
+//                        val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
+//                        itemList.add(Item(id, name, shortName, description, dateCreated, actionCount, isActive))
+//                    } while (it.moveToNext())
+//                }
+//            }
+//        }
+//    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             TopBarMain(selectedDate = selectedDate)
             MainList(
                 navController = navController,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 itemList = itemList
             )
         }
@@ -102,14 +110,86 @@ fun MainContent(
             onClick = {
                 navController.navigate("ItemPageCreate")
             },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {
             Text("+")
         }
     }
 }
+
+//@Composable
+//fun MainContent(
+//    navController: NavHostController,
+//    sharedPreferences: SharedPreferences,
+//    selectedDate: MutableState<String>
+//) {
+//    val db = DataBase(LocalContext.current, null)
+////    val itemNameList = remember { mutableStateListOf<String>() }
+//    val itemList = remember { mutableStateListOf<Item>() }
+//    val currentBackStackEntry = navController.currentBackStackEntryAsState()
+//
+//    Log.d("MainContent selectedDate", selectedDate.value)
+//    LaunchedEffect(currentBackStackEntry.value, selectedDate.value) {
+//        Log.d("LaunchedEffect", "LaunchedEffect trigger ${currentBackStackEntry.value} ${selectedDate.value}")
+//        if (currentBackStackEntry.value?.destination?.route == "main") {
+////            itemNameList.clear()
+//            Log.d("selectedDate", "selectedDate after if: ${selectedDate.value}")
+//            itemList.clear()
+//            val rows = db.getAllItems()
+//            rows?.let {
+//                if (it.moveToFirst()) {
+//                    do {
+//                        val id = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
+//                        val name = it.getString(it.getColumnIndexOrThrow(DataBase.NAME_COL))
+//                        val shortName =
+//                            it.getString(it.getColumnIndexOrThrow(DataBase.SHORT_NAME_COL))
+//                        val description =
+//                            it.getString(it.getColumnIndexOrThrow(DataBase.DESCRIPTION_COL))
+//                        val dateCreated =
+//                            it.getString(it.getColumnIndexOrThrow(DataBase.DATE_CREATED_COL))
+//                        val actionCount =
+//                            db.getActionsByItemIdAndDate(id, selectedDate.value)?.count ?: 0
+//                        val isActive = it.getInt(it.getColumnIndexOrThrow(DataBase.ACTIVE_COL))
+//                        itemList.add(
+//                            Item(
+//                                id,
+//                                name,
+//                                shortName,
+//                                description,
+//                                dateCreated,
+//                                actionCount,
+//                                isActive
+//                            )
+//                        )
+//                    } while (it.moveToNext())
+//                }
+//            }
+//            Log.d("MainList", "itemList 88: $itemList")
+//        }
+//    }
+//
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        Column {
+//            TopBarMain(selectedDate = selectedDate)
+//            MainList(
+//                navController = navController,
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//                itemList = itemList
+//            )
+//        }
+//        FloatingActionButton(
+//            onClick = {
+//                navController.navigate("ItemPageCreate")
+//            },
+//            modifier = Modifier
+//                .align(Alignment.BottomEnd)
+//                .padding(16.dp)
+//        ) {
+//            Text("+")
+//        }
+//    }
+//}
 
 
 @Composable
@@ -123,7 +203,7 @@ fun MainList(
 //    val itemListState = remember { mutableStateListOf<Item>().apply { addAll(itemList) } }
 //    val itemListState = remember { mutableStateListOf(*itemList.toTypedArray()) }
 //    Log.d("MainList", "itemListState: $itemListState")
-//    Log.d("MainList", "itemList: $itemList")
+    Log.d("MainList", "itemList: $itemList")
 //    LaunchedEffect(itemListState) {
 //        itemListState.clear()
 //        itemListState.addAll(itemList)
@@ -180,6 +260,7 @@ fun MainContentPreview() {
     MainContent(
         navController = navController,
         sharedPreferences = LocalContext.current.getSharedPreferences("prefs", Context.MODE_PRIVATE),
-        selectedDate = selectedDate
+        selectedDate = selectedDate,
+        itemList = mutableListOf()
     )
 }
