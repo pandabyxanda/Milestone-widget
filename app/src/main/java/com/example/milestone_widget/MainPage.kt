@@ -22,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -60,10 +61,12 @@ fun MainContent(
             refreshItemList(db, itemList, selectedDate.value)
         }
     }
-
+    val refreshMainPage = {
+        refreshItemList(db, itemList, selectedDate.value)
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            TopBarMain(selectedDate = selectedDate)
+            TopBarMain(selectedDate, onRefresh = refreshMainPage)
             MainList(
                 navController = navController,
                 modifier = Modifier.fillMaxSize(),
@@ -204,6 +207,32 @@ fun MainContentPreview() {
     val selectedDate = remember {
         mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
     }
+    val itemList = remember { mutableStateListOf<Item>() }
+    val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    val item1 = Item(1,
+        "Beer",
+        "\uD83C\uDF7A",
+        "Sample Description",
+        date,
+        0,
+        1)
+    val item2 = Item(1,
+        "Water",
+        "",
+        "Sample Description",
+        date,
+        5,
+        1)
+    val item3 = Item(1,
+        "Trainings",
+        "T",
+        "Sample Description",
+        date,
+        0,
+        0)
+    itemList.add(item1)
+    itemList.add(item2)
+    itemList.add(item3)
     MainContent(
         navController = navController,
         sharedPreferences = LocalContext.current.getSharedPreferences(
@@ -211,6 +240,6 @@ fun MainContentPreview() {
             Context.MODE_PRIVATE
         ),
         selectedDate = selectedDate,
-        itemList = mutableListOf()
+        itemList = itemList
     )
 }

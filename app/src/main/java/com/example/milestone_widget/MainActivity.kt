@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -78,32 +79,36 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
         }
     }
 
-    NavHost(navController = navController, startDestination = "main") {
-        composable("main") { MainContent(navController, sharedPreferences, selectedDate, itemList) }
-        composable("ItemPageCreate") {
-            ItemPageCreate(
-                navController,
-                itemList,
-                onItemAddedListener
-            )
-        }
-        composable("ItemPageUpdate/{id}/{name}/{shortName}/{description}/{dateCreated}/{isActive}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")?.toInt()
-            val name = backStackEntry.arguments?.getString("name")
-            val shortName = backStackEntry.arguments?.getString("shortName")
-            val description = backStackEntry.arguments?.getString("description")
-            val dateCreated = backStackEntry.arguments?.getString("dateCreated")
-            val isActive = backStackEntry.arguments?.getString("isActive")?.toInt()
-            ItemPageUpdate(
-                navController,
-                id,
-                name,
-                shortName,
-                description,
-                dateCreated,
-                isActive,
-                selectedDate
-            )
+
+
+    Column {
+        NavHost(navController = navController, startDestination = "main") {
+            composable("main") { MainContent(navController, sharedPreferences, selectedDate, itemList) }
+            composable("ItemPageCreate") {
+                ItemPageCreate(
+                    navController,
+                    itemList,
+                    onItemAddedListener
+                )
+            }
+            composable("ItemPageUpdate/{id}/{name}/{shortName}/{description}/{dateCreated}/{isActive}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id")?.toInt()
+                val name = backStackEntry.arguments?.getString("name")
+                val shortName = backStackEntry.arguments?.getString("shortName")
+                val description = backStackEntry.arguments?.getString("description")
+                val dateCreated = backStackEntry.arguments?.getString("dateCreated")
+                val isActive = backStackEntry.arguments?.getString("isActive")?.toInt()
+                ItemPageUpdate(
+                    navController,
+                    id,
+                    name,
+                    shortName,
+                    description,
+                    dateCreated,
+                    isActive,
+                    selectedDate
+                )
+            }
         }
     }
 }

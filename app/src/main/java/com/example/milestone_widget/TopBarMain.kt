@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -22,7 +23,7 @@ import java.util.Calendar
 
 
 @Composable
-fun TopBarMain(selectedDate: MutableState<String>) {
+fun TopBarMain(selectedDate: MutableState<String>, onRefresh: () -> Unit) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     if (selectedDate.value.isNotEmpty()) {
@@ -37,13 +38,8 @@ fun TopBarMain(selectedDate: MutableState<String>) {
             .background(Color.Blue)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-//        IconButton(onClick = { /* Handle menu click */ }) {
-//            Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = Color.White)
-//        }
-//        Text(text = "Main Screen", color = Color.White)
-
         IconButton(onClick = {
             val datePickerDialog = DatePickerDialog(
                 context,
@@ -58,13 +54,13 @@ fun TopBarMain(selectedDate: MutableState<String>) {
             datePickerDialog.show()
         }) {
             Icon(Icons.Filled.DateRange, contentDescription = "Select Date", tint = Color.White)
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Text(text = "Select Date")
         }
 
-//        IconButton(onClick = { /* Handle search click */ }) {
-//            Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White)
-//        }
+        IconButton(onClick = {
+            onRefresh()
+        }) {
+            Icon(Icons.Filled.Refresh, contentDescription = "Refresh", tint = Color.White)
+        }
     }
 }
 
