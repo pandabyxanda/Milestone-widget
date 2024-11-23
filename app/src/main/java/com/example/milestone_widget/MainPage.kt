@@ -177,7 +177,7 @@ fun MainList(
         AlertDialog(
             onDismissRequest = { setShowDialog(false) },
             title = { Text(text = "Confirm Delete") },
-            text = { Text(text = "Are you sure you want to delete this item?") },
+            text = { Text(text = "Are you sure you want to delete '${itemToDelete.name}'?") },
             confirmButton = {
                 TextButton(
                     onClick = {
