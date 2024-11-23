@@ -18,19 +18,23 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.milestone_widget.db.DataBase
-import com.example.milestone_widget.widget.updateWidget
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.db.Item
+import com.example.milestone_widget.widget.updateWidget
 
+interface OnItemAddedListener {
+    fun onItemAdded()
+}
 
 @Composable
 fun ItemPageCreate(
     navController: NavHostController,
-    itemList: MutableList<Item>
+    itemList: MutableList<Item>,
+    onItemAddedListener: OnItemAddedListener
 ) {
     val context = LocalContext.current
     val db = DataBase(context, null)
@@ -48,8 +52,7 @@ fun ItemPageCreate(
             if (nameState.value.isNotEmpty()) {
                 db.addItem(nameState.value, shortNameState.value, descriptionState.value)
                 updateWidget(context)
-//                navController.previousBackStackEntry?.savedStateHandle?.set("itemCreated", true)
-                itemList.add(Item(1, nameState.value, shortNameState.value, descriptionState.value, "2000-00-00", 0, 0))
+                onItemAddedListener.onItemAdded()
             }
         }
     }
@@ -106,6 +109,11 @@ fun ItemPageCreatePreview() {
     val navController = rememberNavController()
     ItemPageCreate(
         navController = navController,
-        itemList = mutableListOf()
+        itemList = mutableListOf(),
+        object : OnItemAddedListener {
+            override fun onItemAdded() {
+                // Do nothing
+            }
+        }
     )
 }
