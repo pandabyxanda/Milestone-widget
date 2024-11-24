@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import com.example.milestone_widget.MainActivity
 import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.getCurrentHour
@@ -42,6 +43,16 @@ internal fun updateAppWidgetInternal(
         updateIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
+
+    // Intent to launch MainActivity
+    val launchAppIntent = Intent(context, MainActivity::class.java)
+    val launchAppPendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        launchAppIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    views.setOnClickPendingIntent(R.id.widget_container, launchAppPendingIntent)
 
     views.removeAllViews(R.id.widget_container)
     headerView.setOnClickPendingIntent(R.id.update_button, updatePendingIntent)
