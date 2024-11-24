@@ -28,7 +28,12 @@ import com.example.milestone_widget.widget.updateWidget
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Calendar
 
+fun getCurrentHour(): Int {
+    val calendar = Calendar.getInstance()
+    return calendar.get(Calendar.HOUR_OF_DAY)
+}
 
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -54,8 +59,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(sharedPreferences: SharedPreferences) {
     val navController = rememberNavController()
+    val startingHour = "06"
     val selectedDate = remember {
         mutableStateOf(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
+    }
+    val hour = getCurrentHour()
+    if (hour < startingHour.toInt()) {
+        selectedDate.value = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date().time - 24 * 60 * 60 * 1000)
     }
     val itemList = remember { mutableStateListOf<Item>() }
     val context = LocalContext.current

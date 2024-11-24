@@ -7,6 +7,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
+import com.example.milestone_widget.getCurrentHour
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -19,7 +20,17 @@ internal fun updateAppWidgetInternal(
     val views = RemoteViews(context.packageName, R.layout.main_widget)
     val db = DataBase(context, null)
     val items = db.getAllItems()
-    val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+    val startingHour = "06"
+    var date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    val hour = getCurrentHour()
+    if (hour < startingHour.toInt()) {
+        date = SimpleDateFormat(
+            "yyyy-MM-dd",
+            Locale.getDefault()
+        ).format(Date().time - 24 * 60 * 60 * 1000)
+    }
+
     val headerView = RemoteViews(context.packageName, R.layout.widget_header)
     val updateIntent = Intent(context, MainWidget::class.java).apply {
         action = AppWidgetManager.ACTION_APPWIDGET_UPDATE

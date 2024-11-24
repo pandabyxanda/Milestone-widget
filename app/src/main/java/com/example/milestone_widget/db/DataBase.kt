@@ -5,7 +5,9 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -82,24 +84,56 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $ITEM_TABLE_NAME", null)
     }
 
-    fun getActionsByItemIdAndDate(itemId: Int, date: String): Cursor? {
+
+    fun getActionsByItemIdAndDate(itemId: Int, date: String, startHour: String = "06"): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery(
-            "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND DATE($DATE_COL) = DATE(?)",
-            arrayOf(itemId.toString(), date)
-        )
+        val startDateStr = "$date $startHour:00:00"
+        val dateStart = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startDateStr)
+        if (dateStart != null) {
+            val calendar = Calendar.getInstance().apply {
+                time = dateStart
+                add(Calendar.DAY_OF_MONTH, 1)
+                add(Calendar.SECOND, -1)
+            }
+            val dateEnd = calendar.time;
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val endDateStr = formatter.format(dateEnd)
+//            Log.d("MainActivity", "startDateStr: $startDateStr")
+//            Log.d("MainActivity", "endDateStr: $endDateStr")
+            return db.rawQuery(
+                "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND $DATE_COL BETWEEN ? AND ?",
+                arrayOf(itemId.toString(), startDateStr, endDateStr)
+            )
+        } else {
+            return null
+        }
     }
 
-    fun getActionCountByItemIdAndDate(itemId: Int, date: String): Int {
+    fun getActionCountByItemIdAndDate(itemId: Int, date: String, startHour: String = "06"): Int {
         val db = this.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND DATE($DATE_COL) = DATE(?)",
-            arrayOf(itemId.toString(), date)
-        )
+        val startDateStr = "$date $startHour:00:00"
+        val dateStart = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startDateStr)
+
         var count = 0
-        cursor.use {
-            if (it.moveToFirst()) {
-                count = it.getInt(0)
+        if (dateStart != null) {
+            val calendar = Calendar.getInstance().apply {
+                time = dateStart
+                add(Calendar.DAY_OF_MONTH, 1)
+                add(Calendar.SECOND, -1)
+            }
+            val dateEnd = calendar.time;
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val endDateStr = formatter.format(dateEnd)
+//            Log.d("MainActivity", "startDateStr: $startDateStr")
+//            Log.d("MainActivity", "endDateStr: $endDateStr")
+            val cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND $DATE_COL BETWEEN ? AND ?",
+                arrayOf(itemId.toString(), startDateStr, endDateStr)
+            )
+            cursor.use {
+                if (it.moveToFirst()) {
+                    count = it.getInt(0)
+                }
             }
         }
         return count
