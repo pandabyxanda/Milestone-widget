@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -26,9 +29,9 @@ import com.example.milestone_widget.other_pages.OnItemAddedListener
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
 import com.example.milestone_widget.widget.updateWidget
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.Calendar
 
 fun getCurrentHour(): Int {
     val calendar = Calendar.getInstance()
@@ -65,7 +68,10 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
     }
     val hour = getCurrentHour()
     if (hour < startingHour.toInt()) {
-        selectedDate.value = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date().time - 24 * 60 * 60 * 1000)
+        selectedDate.value = SimpleDateFormat(
+            "yyyy-MM-dd",
+            Locale.getDefault()
+        ).format(Date().time - 24 * 60 * 60 * 1000)
     }
     val itemList = remember { mutableStateListOf<Item>() }
     val context = LocalContext.current
@@ -75,8 +81,16 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
             refreshItemList(db, itemList, selectedDate.value)
         }
     }
+    val durationMillis = 700
     Column {
-        NavHost(navController = navController, startDestination = "main") {
+        NavHost(
+            navController = navController,
+            startDestination = "main",
+            enterTransition = { fadeIn(animationSpec = tween(durationMillis)) },
+            exitTransition = { fadeOut(animationSpec = tween(durationMillis)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis)) },
+            popExitTransition = { fadeOut(animationSpec = tween(durationMillis)) }
+        ) {
             composable("main") { MainPage(navController, selectedDate, itemList) }
             composable("ItemPageCreate") {
                 ItemPageCreate(
@@ -106,6 +120,7 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
         }
     }
 }
+
 
 @Preview
 @Composable

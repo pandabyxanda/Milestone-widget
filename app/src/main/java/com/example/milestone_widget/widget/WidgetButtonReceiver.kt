@@ -15,7 +15,6 @@ class WidgetButtonReceiver : BroadcastReceiver() {
         if (intent.action == "com.example.milestone_widget.BUTTON_CLICK") {
             val itemName = intent.getStringExtra("item_name")
 //            Log.d("WidgetButtonReceiver", "Button clicked: $itemName")
-
             val db = DataBase(context, null)
             val cursor = db.getAllItems()
             cursor?.use {
@@ -31,7 +30,6 @@ class WidgetButtonReceiver : BroadcastReceiver() {
                     } while (it.moveToNext())
                 }
             }
-
             // Update the widget
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val componentName = ComponentName(context, MainWidget::class.java)
