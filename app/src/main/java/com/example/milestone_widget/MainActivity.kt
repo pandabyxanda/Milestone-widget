@@ -18,6 +18,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.db.Item
+import com.example.milestone_widget.main_page.MainPage
+import com.example.milestone_widget.main_page.refreshItemList
+import com.example.milestone_widget.other_pages.ItemPageCreate
+import com.example.milestone_widget.other_pages.ItemPageUpdate
+import com.example.milestone_widget.other_pages.OnItemAddedListener
 import com.example.milestone_widget.ui.theme.Milestone_widgetTheme
 import com.example.milestone_widget.widget.updateWidget
 import java.text.SimpleDateFormat
@@ -32,10 +37,8 @@ class MainActivity : ComponentActivity() {
         Log.d("MainActivity", "onCreate")
         sharedPreferences =
             getSharedPreferences("com.example.milestone_widget", Context.MODE_PRIVATE)
-
         setContent {
             Milestone_widgetTheme {
-//                DiceRollerApp(sharedPreferences)
                 MainScreen(sharedPreferences)
             }
         }
@@ -44,22 +47,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-//        // Send broadcast to update the widget
-//        val intent = Intent(this, Xwidget::class.java).apply {
-//            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-//            putExtra(
-//                AppWidgetManager.EXTRA_APPWIDGET_IDS,
-//                AppWidgetManager.getInstance(this@MainActivity)
-//                    .getAppWidgetIds(ComponentName(this@MainActivity, Xwidget::class.java))
-//            )
-//        }
-//        sendBroadcast(intent)
         updateWidget(this)
-    }
-
-
-    override fun onResume() {
-        super.onResume()
     }
 }
 
@@ -72,22 +60,17 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
     val itemList = remember { mutableStateListOf<Item>() }
     val context = LocalContext.current
     val db = DataBase(context, null)
-
     val onItemAddedListener = object : OnItemAddedListener {
         override fun onItemAdded() {
             refreshItemList(db, itemList, selectedDate.value)
         }
     }
-
-
-
     Column {
         NavHost(navController = navController, startDestination = "main") {
-            composable("main") { MainContent(navController, sharedPreferences, selectedDate, itemList) }
+            composable("main") { MainPage(navController, selectedDate, itemList) }
             composable("ItemPageCreate") {
                 ItemPageCreate(
                     navController,
-                    itemList,
                     onItemAddedListener
                 )
             }
@@ -116,14 +99,13 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
 
 @Preview
 @Composable
-fun MainApp(
+fun MainAppPreview(
     sharedPreferences: SharedPreferences = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences(
         "com.example.milestone_widget",
         Context.MODE_PRIVATE
     )
 ) {
     MainScreen(sharedPreferences)
-
 }
 
 

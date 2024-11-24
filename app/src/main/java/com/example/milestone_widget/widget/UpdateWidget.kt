@@ -6,10 +6,10 @@ import android.content.Context
 import android.content.Intent
 
 fun updateWidget(context: Context) {
-    val intent = Intent(context, Xwidget::class.java).apply {
+    val intent = Intent(context, MainWidget::class.java).apply {
         action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         val ids = AppWidgetManager.getInstance(context)
-            .getAppWidgetIds(ComponentName(context, Xwidget::class.java))
+            .getAppWidgetIds(ComponentName(context, MainWidget::class.java))
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
     }
     context.sendBroadcast(intent)

@@ -1,4 +1,4 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.main_page
 
 import android.app.DatePickerDialog
 import android.util.Log
@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.example.milestone_widget.R
 import java.util.Calendar
 
 
@@ -56,7 +57,6 @@ fun TopBarMain(selectedDate: MutableState<String>, onRefresh: () -> Unit) {
         }) {
             Icon(Icons.Filled.DateRange, contentDescription = "Select Date", tint = Color.White)
         }
-
         IconButton(onClick = {
             onRefresh()
         }) {

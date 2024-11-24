@@ -1,4 +1,4 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.other_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,19 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.db.Item
 import com.example.milestone_widget.widget.updateWidget
-import java.time.format.TextStyle
 
-interface OnItemAddedListener {
-    fun onItemAdded()
-}
 
 @Composable
 fun ItemPageCreate(
     navController: NavHostController,
-    itemList: MutableList<Item>,
     onItemAddedListener: OnItemAddedListener
 ) {
     val context = LocalContext.current
@@ -65,9 +59,10 @@ fun ItemPageCreate(
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.main_background))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.main_background))
     ) {
         Column {
             TopBarItemPage(
@@ -114,7 +109,6 @@ fun TextFieldWithPlaceholder(
     onValueChange: (String) -> Unit,
     placeholderText: String,
     modifier: Modifier = Modifier,
-    labelText: String? = null,
     textSize: Int = 18,
     placeholderTextSize: Int = 18,
     multiLines: Boolean = false,
@@ -127,13 +121,10 @@ fun TextFieldWithPlaceholder(
                 text = placeholderText,
                 color = Color.Gray,
                 fontSize = placeholderTextSize.sp,
-                )
+            )
         },
         modifier = modifier,
         colors = OutlinedTextFieldDefaults.colors(
-//            unfocusedContainerColor = Color.Gray,
-//            focusedLabelColor = Color.Transparent,
-//            unfocusedBorderColor = Color.Green,
             unfocusedBorderColor = Color.Transparent,
             focusedBorderColor = Color.Transparent
         ),
@@ -143,16 +134,18 @@ fun TextFieldWithPlaceholder(
     )
 }
 
+interface OnItemAddedListener {
+    fun onItemAdded()
+}
+
 @Preview(showBackground = true)
 @Composable
 fun ItemPageCreatePreview() {
     val navController = rememberNavController()
     ItemPageCreate(
         navController = navController,
-        itemList = mutableListOf(),
         object : OnItemAddedListener {
             override fun onItemAdded() {
-                // Do nothing
             }
         }
     )

@@ -7,7 +7,6 @@ plugins {
 android {
     namespace = "com.example.milestone_widget"
     compileSdk = 34
-
     defaultConfig {
         applicationId = "com.example.milestone_widget"
         minSdk = 24
@@ -17,7 +16,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -44,7 +42,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

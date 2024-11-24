@@ -1,7 +1,5 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.main_page
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
 import com.example.milestone_widget.db.Item
 import java.text.SimpleDateFormat
@@ -47,9 +46,8 @@ import java.util.Locale
 
 
 @Composable
-fun MainContent(
+fun MainPage(
     navController: NavHostController,
-    sharedPreferences: SharedPreferences,
     selectedDate: MutableState<String>,
     itemList: MutableList<Item>
 ) {
@@ -70,9 +68,10 @@ fun MainContent(
     val refreshMainPage = {
         refreshItemList(db, itemList, selectedDate.value)
     }
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.main_background))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.main_background))
     ) {
         Column {
             TopBarMain(selectedDate, onRefresh = refreshMainPage)
@@ -99,7 +98,7 @@ fun MainContent(
                 text = "+",
 
                 fontSize = 30.sp,
-                )
+            )
         }
     }
 }
@@ -146,7 +145,6 @@ fun MainList(
     val db = DataBase(context, null)
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val (itemToDelete, setItemToDelete) = remember { mutableStateOf<Item?>(null) }
-
     LazyColumn(
         modifier = modifier
             .padding(10.dp)
@@ -209,7 +207,7 @@ fun MainList(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        db.deleteItem(itemToDelete!!.id)
+                        db.deleteItem(itemToDelete.id)
                         refreshItemList()
                         setShowDialog(false)
                     }
@@ -267,12 +265,8 @@ fun MainContentPreview() {
     itemList.add(item1)
     itemList.add(item2)
     itemList.add(item3)
-    MainContent(
+    MainPage(
         navController = navController,
-        sharedPreferences = LocalContext.current.getSharedPreferences(
-            "prefs",
-            Context.MODE_PRIVATE
-        ),
         selectedDate = selectedDate,
         itemList = itemList
     )

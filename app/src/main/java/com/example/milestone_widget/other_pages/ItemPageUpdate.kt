@@ -1,4 +1,4 @@
-package com.example.milestone_widget
+package com.example.milestone_widget.other_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,10 +17,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -33,13 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.milestone_widget.R
 import com.example.milestone_widget.db.Action
 import com.example.milestone_widget.db.DataBase
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.example.milestone_widget.widget.updateWidget
 
 
 @Composable
@@ -94,9 +92,10 @@ fun ItemPageUpdate(
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.main_background))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.main_background))
     ) {
         Column {
             TopBarItemPage(
@@ -134,15 +133,14 @@ fun ItemPageUpdate(
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.padding(16.dp)
             ) {
                 Checkbox(
                     checked = isActiveState.value,
                     onCheckedChange = { isActiveState.value = it },
                     colors = CheckboxDefaults.colors(
-                    checkedColor = colorResource(id = R.color.button_add_item_background),
-                    uncheckedColor = Color.Red,
-                    checkmarkColor = Color.White
+                        checkedColor = colorResource(id = R.color.button_add_item_background),
+                        uncheckedColor = Color.Red,
+                        checkmarkColor = Color.White
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -164,7 +162,7 @@ fun ItemPageUpdate(
 
                 items(actionList) { action ->
                     Button(
-                        onClick = { /* handle button click */ },
+                        onClick = {},
                         colors = ButtonDefaults.buttonColors(Color.LightGray),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -200,8 +198,6 @@ fun ItemPageUpdate(
 }
 
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun ItemPageUpdatePreview() {
@@ -218,7 +214,6 @@ fun ItemPageUpdatePreview() {
         selectedDate = selectedDate,
         object : OnItemAddedListener {
             override fun onItemAdded() {
-                // Do nothing
             }
         }
     )

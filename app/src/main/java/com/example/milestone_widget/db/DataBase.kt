@@ -53,28 +53,28 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             put(NAME_COL, name)
             put(SHORT_NAME_COL, shortName)
             put(DESCRIPTION_COL, description)
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val currentDate = sdf.format(Date())
+            val currentDate = getCurrentDate()
             put(DATE_CREATED_COL, currentDate)
-            put(ACTIVE_COL, 1) // Set Active to True by default
+            put(ACTIVE_COL, 1)
         }
 
         val db = this.writableDatabase
-        db.insert(ITEM_TABLE_NAME, null, values)
-        db.close()
+        db.use { database ->
+            database.insert(ITEM_TABLE_NAME, null, values)
+        }
     }
 
     fun addItemAction(itemId: Int) {
         val values = ContentValues().apply {
             put(ITEM_ID_COL, itemId)
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val currentDate = sdf.format(Date())
+            val currentDate = getCurrentDate()
             put(DATE_COL, currentDate)
         }
 
         val db = this.writableDatabase
-        db.insert(ITEM_ACTIONS_TABLE_NAME, null, values)
-        db.close()
+        db.use { database ->
+            database.insert(ITEM_ACTIONS_TABLE_NAME, null, values)
+        }
     }
 
     fun getAllItems(): Cursor? {
@@ -97,7 +97,7 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             arrayOf(itemId.toString(), date)
         )
         var count = 0
-        cursor?.use {
+        cursor.use {
             if (it.moveToFirst()) {
                 count = it.getInt(0)
             }
@@ -113,20 +113,32 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             put(DESCRIPTION_COL, description)
             put(ACTIVE_COL, isActive)
         }
-        db.update(ITEM_TABLE_NAME, values, "$ITEM_ID_COL = ?", arrayOf(id.toString()))
-        db.close()
+        db.use { database ->
+            database.update(ITEM_TABLE_NAME, values, "$ITEM_ID_COL = ?", arrayOf(id.toString()))
+        }
     }
 
     fun deleteItem(itemId: Int) {
         val db = this.writableDatabase
-        db.delete(ITEM_TABLE_NAME, "$ITEM_ID_COL = ?", arrayOf(itemId.toString()))
-        db.close()
+        db.use { database ->
+            database.delete(ITEM_TABLE_NAME, "$ITEM_ID_COL = ?", arrayOf(itemId.toString()))
+        }
     }
 
     fun deleteAction(actionId: Int) {
         val db = this.writableDatabase
-        db.delete(ITEM_ACTIONS_TABLE_NAME, "$ACTION_ID_COL = ?", arrayOf(actionId.toString()))
-        db.close()
+        db.use { database ->
+            database.delete(
+                ITEM_ACTIONS_TABLE_NAME,
+                "$ACTION_ID_COL = ?",
+                arrayOf(actionId.toString())
+            )
+        }
+    }
+
+    private fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+        return sdf.format(Date())
     }
 
     companion object {
@@ -144,5 +156,7 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         const val ITEM_ACTIONS_TABLE_NAME = "item_actions_table"
         const val ACTION_ID_COL = "action_id"
         const val DATE_COL = "date"
+
+        private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     }
 }
