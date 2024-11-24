@@ -8,4 +8,15 @@
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+
+    <!-- Custom DatePickerDialog theme -->
+    <style name="CustomDatePickerDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorAccent">@color/AccentDatePicker</item>
+        <item name="android:datePickerDialogTheme">@style/CustomDatePicker</item>
+    </style>
+
+    <style name="CustomDatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:headerBackground">@color/HeaderBackgroundDatePicker</item>
+        <item name="android:datePickerMode">spinner</item>
+    </style>
 </resources>

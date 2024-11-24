@@ -4,4 +4,9 @@
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="update_button_desc">Update button description</string>
+    <string name="about_message">
+        Main part of this application is the widget.
+        Application without widget is not very useful.
+        Day starts at 6 am and end at 5:59 AM
+    </string>
 </resources>

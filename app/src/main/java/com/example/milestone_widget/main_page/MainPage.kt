@@ -212,14 +212,14 @@ fun MainList(
                         setShowDialog(false)
                     }
                 ) {
-                    Text("Delete")
+                    Text("Delete", color = Color.Black)
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { setShowDialog(false) }
                 ) {
-                    Text("Cancel")
+                    Text("Cancel", color = Color.Black)
                 }
             }
         )

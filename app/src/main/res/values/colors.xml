@@ -14,4 +14,8 @@
     <color name="button_pressed_color">#8BFF0000</color>
     <color name="widget_button_border">#000000</color>
     <color name="widget_button_border_pressed">#8BFF0000</color>
+
+    <color name="HeaderBackgroundDatePicker">#803030</color>
+    <color name="AccentDatePicker">#401010</color>
+
 </resources>
