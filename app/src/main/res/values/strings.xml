@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Milestone widget</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="app_name">SJTW - simple job tracker widget</string>
+    <string name="appwidget_text">SJTW widget</string>
+
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="update_button_desc">Update button description</string>

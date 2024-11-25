@@ -34,7 +34,10 @@ fun TopBarItemPage(
         horizontalArrangement = Arrangement.Center
     ) {
         IconButton(onClick = {
-            navController.navigate("main")
+            navController.navigate("main") {
+                popUpTo("main") { inclusive = true }
+                launchSingleTop = true
+            }
         }) {
             Icon(
                 Icons.AutoMirrored.Default.ArrowBack,
