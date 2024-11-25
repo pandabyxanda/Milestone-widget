@@ -30,7 +30,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.milestone_widget.R
 import com.example.milestone_widget.db.DataBase
-import com.example.milestone_widget.db.Item
 import com.example.milestone_widget.widget.updateWidget
 
 
