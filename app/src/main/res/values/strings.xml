@@ -7,7 +7,7 @@
     <string name="update_button_desc">Update button description</string>
     <string name="about_message">
         Main part of this application is the widget.
-        Application without widget is not very useful.
-        Day starts at 6 am and end at 5:59 AM
+        Each day starts at 6 am and ends at 5:59 am next day.
     </string>
+    <string name="create_new_item">Create new job</string>
 </resources>
