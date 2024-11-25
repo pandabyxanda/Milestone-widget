@@ -130,7 +130,6 @@ fun refreshItemList(db: DataBase, itemList: MutableList<Item>, selectedDate: Str
             } while (it.moveToNext())
         }
     }
-    Log.d("MainList", "itemList 88")
 }
 
 

@@ -95,11 +95,9 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 add(Calendar.DAY_OF_MONTH, 1)
                 add(Calendar.SECOND, -1)
             }
-            val dateEnd = calendar.time;
+            val dateEnd = calendar.time
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val endDateStr = formatter.format(dateEnd)
-//            Log.d("MainActivity", "startDateStr: $startDateStr")
-//            Log.d("MainActivity", "endDateStr: $endDateStr")
             return db.rawQuery(
                 "SELECT * FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND $DATE_COL BETWEEN ? AND ?",
                 arrayOf(itemId.toString(), startDateStr, endDateStr)
@@ -121,11 +119,9 @@ class DataBase(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 add(Calendar.DAY_OF_MONTH, 1)
                 add(Calendar.SECOND, -1)
             }
-            val dateEnd = calendar.time;
+            val dateEnd = calendar.time
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val endDateStr = formatter.format(dateEnd)
-//            Log.d("MainActivity", "startDateStr: $startDateStr")
-//            Log.d("MainActivity", "endDateStr: $endDateStr")
             val cursor = db.rawQuery(
                 "SELECT COUNT(*) FROM $ITEM_ACTIONS_TABLE_NAME WHERE $ITEM_ID_COL = ? AND $DATE_COL BETWEEN ? AND ?",
                 arrayOf(itemId.toString(), startDateStr, endDateStr)

@@ -24,7 +24,7 @@ class WidgetButtonReceiver : BroadcastReceiver() {
                         if (name == itemName) {
                             val itemId = it.getInt(it.getColumnIndexOrThrow(DataBase.ITEM_ID_COL))
                             db.addItemAction(itemId)
-                            Log.d("WidgetButtonReceiver", "Item action added for item ID: $itemId")
+//                            Log.d("WidgetButtonReceiver", "Item action added for item ID: $itemId")
                             break
                         }
                     } while (it.moveToNext())

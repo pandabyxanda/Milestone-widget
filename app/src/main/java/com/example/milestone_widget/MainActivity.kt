@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -120,20 +119,3 @@ fun MainScreen(sharedPreferences: SharedPreferences) {
         }
     }
 }
-
-
-@Preview
-@Composable
-fun MainAppPreview(
-    sharedPreferences: SharedPreferences = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences(
-        "com.example.milestone_widget",
-        Context.MODE_PRIVATE
-    )
-) {
-    MainScreen(sharedPreferences)
-}
-
-
-
-
-
