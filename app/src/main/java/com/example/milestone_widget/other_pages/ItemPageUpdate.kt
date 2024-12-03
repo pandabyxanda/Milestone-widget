@@ -208,7 +208,7 @@ fun ItemPageUpdatePreview() {
         id = 1,
         name = "Sample Item",
         shortName = "Sample",
-        description = "This is a sample item description.",
+        description = "",
         dateCreated = "2024-11-22",
         isActive = 1,
         selectedDate = selectedDate,

@@ -18,4 +18,5 @@
     <color name="HeaderBackgroundDatePicker">#803030</color>
     <color name="AccentDatePicker">#401010</color>
 
+    <color name="placeholder_text">#878787</color>
 </resources>

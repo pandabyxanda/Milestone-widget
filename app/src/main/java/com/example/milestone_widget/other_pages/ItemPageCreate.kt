@@ -119,7 +119,7 @@ fun TextFieldWithPlaceholder(
         placeholder = {
             Text(
                 text = placeholderText,
-                color = Color.Gray,
+                color = colorResource(id = R.color.placeholder_text),
                 fontSize = placeholderTextSize.sp,
             )
         },
