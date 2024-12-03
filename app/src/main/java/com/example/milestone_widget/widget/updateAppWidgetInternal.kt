@@ -32,18 +32,6 @@ internal fun updateAppWidgetInternal(
         ).format(Date().time - 24 * 60 * 60 * 1000)
     }
 
-    val headerView = RemoteViews(context.packageName, R.layout.widget_header)
-    val updateIntent = Intent(context, MainWidget::class.java).apply {
-        action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
-    }
-    val updatePendingIntent = PendingIntent.getBroadcast(
-        context,
-        appWidgetId,
-        updateIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
     // Intent to launch MainActivity
     val launchAppIntent = Intent(context, MainActivity::class.java)
     val launchAppPendingIntent = PendingIntent.getActivity(
@@ -53,10 +41,7 @@ internal fun updateAppWidgetInternal(
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
     views.setOnClickPendingIntent(R.id.widget_container, launchAppPendingIntent)
-
     views.removeAllViews(R.id.widget_container)
-    headerView.setOnClickPendingIntent(R.id.update_button, updatePendingIntent)
-    views.addView(R.id.widget_container, headerView)
     items?.let {
         if (it.moveToFirst()) {
             do {

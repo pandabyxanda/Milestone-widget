@@ -7,7 +7,7 @@
 
     <color name="button_add_item_background">#878787</color>
 
-    <color name="widget_background">#F0F0F0</color>
+    <color name="widget_background">#30F0F0F0</color>
     <color name="widget_button_background">#C9C9C9</color>
     <color name="widget_button_background_pressed">#8B4AB92B</color>
     <color name="button_default_color">#C9C9C9</color>

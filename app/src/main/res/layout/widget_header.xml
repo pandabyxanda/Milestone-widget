@@ -4,13 +4,5 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="8dp">
-
-    <ImageView
-        android:id="@+id/update_button"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="8dp"
-        android:contentDescription="update button description"
-        android:src="@drawable/baseline_refresh_black_18" />
+    android:padding="0dp">
 </LinearLayout>
