@@ -74,8 +74,8 @@ fun TopBarMain(selectedDate: MutableState<String>, onRefresh: () -> Unit) {
                 context,
 //                R.style.CustomDatePickerDialog,
                 { _, year, month, dayOfMonth ->
-                    selectedDate.value = "$year-${month + 1}-$dayOfMonth"
-//                    Log.d("TopBarMain", "Selected date: ${selectedDate.value}")
+                    selectedDate.value = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
+                    Log.d("TopBarMain", "Selected date: ${selectedDate.value}")
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
