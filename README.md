@@ -1,9 +1,10 @@
 # Milestone-widget | SJTW - simple job tracker widget
 
-This app provides simple widget with buttons. 
-When you click on the button, the number of actions for this button increases by one. 
-Statistics are available in the main part of application. 
-You can add new items (widget button) there.
+This Android app offers simple, almost user-friendly widget with buttons. Each time you click a widget button, it tracks your actions and increases the count by one.
+
+The main section of the app provides some statistics. You can add new jobs (widget buttons) directly from the main interface.
+
+Perfect for tracking tasks, amount of water or beer drunk per day, habits, or any activity you want to measure with ease!
 
 ## UI
 <img src="https://github.com/user-attachments/assets/31a92b50-7fc6-4cec-82df-ec59676ec472" width=30% >
